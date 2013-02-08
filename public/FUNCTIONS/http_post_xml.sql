@@ -10,8 +10,6 @@ use WWW::Curl::Easy;
 
 my ($url,$username,$password,$xml) = @_;
 
-elog(DEBUG, "DEBUG_HTTP_POST_XML URL $url Username $username Password $password XML $xml");
-
 my $ch = new WWW::Curl::Easy;
 $ch->setopt(CURLOPT_HEADER,0);
 $ch->setopt(CURLOPT_URL, $url);
@@ -32,7 +30,6 @@ my $retcode = $ch->perform;
 
 if ($retcode == 0) {
     my $response_code = $ch->getinfo(CURLINFO_HTTP_CODE);
-    elog(DEBUG, "DEBUG_HTTP_POST_XML OK retcode: $retcode response_code: $response_code");
 } else {
     my $curlerrortext = $ch->strerror($retcode);
     die "ERROR_HTTP_POST_XML CURL_ERROR retcode: $retcode curlerrortext: $curlerrortext";
