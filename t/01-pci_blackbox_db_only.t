@@ -8,7 +8,7 @@ use DBIx::Pg::CallFunction;
 use Test::More;
 use Test::Deep;
 use Data::Dumper;
-plan tests => 3;
+plan tests => 4;
 
 # Connect to the PCI compliant service
 my $dbh_pci = DBI->connect("dbi:Pg:dbname=pci", '', '', {pg_enable_utf8 => 1, PrintError => 0});
@@ -60,9 +60,10 @@ my $cardkey = $pci->encrypt_card({
 });
 like($cardkey,qr/^[0-9a-f]{512}$/,'Encrypt_Card');
 
-# Use the card by passing the CardKey
-# along with the payment information
-my $response = $pci->authorise_payment_request({
+my $cardid = $nonpci->store_card_key({_cardkey => $cardkey});
+cmp_ok($cardid,'>=',1,"Store_Card_Key");
+
+my $request = {
     _cardkey                 => $cardkey,
     _psp                     => $merchant_account->{psp},
     _merchantaccount         => $merchant_account->{merchantaccount},
@@ -80,7 +81,11 @@ my $response = $pci->authorise_payment_request({
     _selectedbrand           => $selectedbrand,
     _browserinfoacceptheader => $browserinfoacceptheader,
     _browserinfouseragent    => $browserinfouseragent
-});
+};
+
+# Use the card by passing the CardKey
+# along with the payment information
+my $response = $pci->authorise_payment_request($request);
 
 cmp_deeply(
     $response,
@@ -98,4 +103,3 @@ cmp_deeply(
     },
     'Authorise_Payment_Request'
 );
-

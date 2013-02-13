@@ -26,7 +26,7 @@ _CardJSON := Card_To_JSON(
     _CardStartYear
 );
 _CardData := pgp_sym_encrypt(_CardJSON,CardKey,'cipher-algo=aes256');
-INSERT INTO Cards (CardHash,CardData) VALUES (_CardHash, _CardData) RETURNING TRUE INTO STRICT _OK;
+INSERT INTO EncryptedCards (CardHash,CardData) VALUES (_CardHash, _CardData) RETURNING TRUE INTO STRICT _OK;
 RETURN;
 END;
 $BODY$ LANGUAGE plpgsql VOLATILE SECURITY DEFINER;
