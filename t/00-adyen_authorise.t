@@ -10,26 +10,29 @@ use Test::Deep;
 use Data::Dumper;
 plan tests => 3;
 
-# Connect to PostgreSQL and create DBIx::Pg::CallFunction object
-my $dbh = DBI->connect("dbi:Pg:", '', '', {pg_enable_utf8 => 1, PrintError => 0});
-my $pg = DBIx::Pg::CallFunction->new($dbh);
+# Connect to the PCI compliant service
+my $dbh_pci = DBI->connect("dbi:Pg:dbname=pci", '', '', {pg_enable_utf8 => 1, PrintError => 0});
+my $pci = DBIx::Pg::CallFunction->new($dbh_pci);
 
-my $psp = 'Adyen';
-my $merchantaccount = 'TrustlyCOM';
+# Connect to the non-PCI compliant service
+my $dbh = DBI->connect("dbi:Pg:dbname=nonpci", '', '', {pg_enable_utf8 => 1, PrintError => 0});
+my $nonpci = DBIx::Pg::CallFunction->new($dbh);
 
-my $credentials = $pg->get_merchant_account({_psp => $psp, _merchantaccount => $merchantaccount});
+my $merchant_account = $nonpci->get_merchant_account();
 cmp_deeply(
-    $credentials,
+    $merchant_account,
     {
-        url      => re('^https://'),
-        username => re('.+'),
-        password => re('.+')
+        psp             => re('.+'),
+        merchantaccount => re('.+'),
+        url             => re('^https://'),
+        username        => re('.+'),
+        password        => re('.+')
     },
     'Get_Merchant_Account'
 );
 
 my $order = {
-    _merchantaccount  => $merchantaccount,
+    _merchantaccount  => $merchant_account->{merchantaccount},
     _currencycode     => 'EUR',
     _paymentamount    => 2000,
     _reference        => 'Your Reference Here',
@@ -44,7 +47,7 @@ my $order = {
 };
 
 
-my $request_xml = $pg->format_adyen_authorise_request($order);
+my $request_xml = $pci->format_adyen_authorise_request($order);
 
 like($request_xml, qr!
     <soap:Envelope\ xmlns:soap="http://schemas\.xmlsoap\.org/soap/envelope/"\ xmlns:xsd="http://www\.w3\.org/2001/XMLSchema"\ xmlns:xsi="http://www\.w3\.org/2001/XMLSchema-instance">\s*
@@ -73,14 +76,14 @@ like($request_xml, qr!
     </soap:Envelope>
 !sx, "Format_Adyen_Authorise_Request");
 
-my $response_xml = $pg->http_post_xml({
-    _url      => $credentials->{url},
-    _username => $credentials->{username},
-    _password => $credentials->{password},
+my $response_xml = $pci->http_post_xml({
+    _url      => $merchant_account->{url},
+    _username => $merchant_account->{username},
+    _password => $merchant_account->{password},
     _xml      => $request_xml
 });
 
-my $response = $pg->parse_adyen_authorise_response({
+my $response = $pci->parse_adyen_authorise_response({
     _xml => $response_xml
 });
 

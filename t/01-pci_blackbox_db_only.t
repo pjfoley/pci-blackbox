@@ -18,8 +18,6 @@ my $pci = DBIx::Pg::CallFunction->new($dbh_pci);
 my $dbh = DBI->connect("dbi:Pg:dbname=nonpci", '', '', {pg_enable_utf8 => 1, PrintError => 0});
 my $nonpci = DBIx::Pg::CallFunction->new($dbh);
 
-my $psp                     = 'Adyen';
-my $merchantaccount         = 'TrustlyCOM';
 my $cardnumber              = '4111111111111111';
 my $cardexpirymonth         = 12;
 my $cardexpiryyear          = 2012;
@@ -36,13 +34,15 @@ my $selectedbrand           = undef;
 my $browserinfoacceptheader = 'text/html,application/xhtml+xml, application/xml;q=0.9,*/*;q=0.8';
 my $browserinfouseragent    = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9) Gecko/2008052912 Firefox/3.0';
 
-my $credentials = $nonpci->get_merchant_account({_psp => $psp, _merchantaccount => $merchantaccount});
+my $merchant_account = $nonpci->get_merchant_account();
 cmp_deeply(
-    $credentials,
+    $merchant_account,
     {
-        url      => re('^https://'),
-        username => re('.+'),
-        password => re('.+')
+        psp             => re('.+'),
+        merchantaccount => re('.+'),
+        url             => re('^https://'),
+        username        => re('.+'),
+        password        => re('.+')
     },
     'Get_Merchant_Account'
 );
@@ -64,11 +64,11 @@ like($cardkey,qr/^[0-9a-f]{512}$/,'Encrypt_Card');
 # along with the payment information
 my $response = $pci->authorise_payment_request({
     _cardkey                 => $cardkey,
-    _psp                     => $psp,
-    _merchantaccount         => $merchantaccount,
-    _url                     => $credentials->{url},
-    _username                => $credentials->{username},
-    _password                => $credentials->{password},
+    _psp                     => $merchant_account->{psp},
+    _merchantaccount         => $merchant_account->{merchantaccount},
+    _url                     => $merchant_account->{url},
+    _username                => $merchant_account->{username},
+    _password                => $merchant_account->{password},
     _currencycode            => $currencycode,
     _paymentamount           => $paymentamount,
     _reference               => $reference,
