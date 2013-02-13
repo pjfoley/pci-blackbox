@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION Format_Adyen_Authorise_XML(
+CREATE OR REPLACE FUNCTION Format_Adyen_Authorise_Request(
 _MerchantAccount text,
 _CurrencyCode char(3),
 _PaymentAmount numeric,
