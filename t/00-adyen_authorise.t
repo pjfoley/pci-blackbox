@@ -14,11 +14,6 @@ plan tests => 3;
 my $dbh = DBI->connect("dbi:Pg:", '', '', {pg_enable_utf8 => 1, PrintError => 0});
 my $pg = DBIx::Pg::CallFunction->new($dbh);
 
-$dbh->do(q{
--- Silent debug, notice and warning messages from PostgreSQL
-SET client_min_messages = 'error';
-});
-
 my $psp = 'Adyen';
 my $merchantaccount = 'TrustlyCOM';
 

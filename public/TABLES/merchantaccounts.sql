@@ -9,6 +9,3 @@ PRIMARY KEY (MerchantAccountID),
 UNIQUE(PSP,MerchantAccount)
 );
 
--- INSERT INTO MerchantAccounts VALUES (PSP, MerchantAccount, URL, Username, Password)
--- VALUES ('Adyen', 'TrustlyCOM', 'https://pal-test.adyen.com/pal/servlet/soap/Payment', 'ws@Company.TrustlyGroupAB', 'xxxxxxxxxxxxxx');
-
