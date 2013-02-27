@@ -8,7 +8,9 @@ use DBIx::Pg::CallFunction;
 use Test::More;
 use Test::Deep;
 use Data::Dumper;
-plan tests => 6;
+use LWP::UserAgent;
+use File::Slurp qw(write_file);
+plan tests => 9;
 
 # Connect to the PCI compliant service
 my $dbh_pci = DBI->connect("dbi:Pg:dbname=pci", '', '', {pg_enable_utf8 => 1, PrintError => 0});
@@ -175,6 +177,28 @@ cmp_deeply(
 
 $cardid = $nonpci->store_card_key({_cardkey => $response->{cardkey}});
 
+my $ua = LWP::UserAgent->new();
+my $http_response = $ua->post($response->{issuerurl}, {
+    PaReq   => $response->{parequest},
+    TermUrl => 'https://foo.bar.com/',
+    MD      => $response->{md}
+});
+ok($http_response->is_success, "POST issuer URL, load password form");
+
+$http_response = $ua->post('https://test.adyen.com/hpp/3d/authenticate.shtml', {
+    PaReq      => $response->{parequest},
+    TermUrl    => 'https://foo.bar.com/',
+    MD         => $response->{md},
+    cardNumber => $request->{_cardnumber},
+    username   => 'username',
+    password   => 'password'
+});
+ok($http_response->is_success, "POST issuer URL, submit password");
+
+if ($http_response->decoded_content =~ m/<input type="hidden" name="PaRes" value="([^"]+)"/) {
+    ok(1,"POST issuer URL, parsed PaRes");
+}
+my $pares = $1;
 
 
 
