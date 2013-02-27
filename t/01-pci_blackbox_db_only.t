@@ -8,7 +8,7 @@ use DBIx::Pg::CallFunction;
 use Test::More;
 use Test::Deep;
 use Data::Dumper;
-plan tests => 4;
+plan tests => 6;
 
 # Connect to the PCI compliant service
 my $dbh_pci = DBI->connect("dbi:Pg:dbname=pci", '', '', {pg_enable_utf8 => 1, PrintError => 0});
@@ -19,16 +19,16 @@ my $dbh = DBI->connect("dbi:Pg:dbname=nonpci", '', '', {pg_enable_utf8 => 1, Pri
 my $nonpci = DBIx::Pg::CallFunction->new($dbh);
 
 my $cardnumber              = '4111111111111111';
-my $cardexpirymonth         = 12;
-my $cardexpiryyear          = 2012;
+my $cardexpirymonth         = 06;
+my $cardexpiryyear          = 2016;
 my $cardholdername          = 'Simon Hopper';
 my $currencycode            = 'EUR';
-my $paymentamount           = 2000;
-my $reference               = 'Your Reference Here';
-my $shopperip               = '61.249.12.12';
+my $paymentamount           = 20;
+my $reference               = rand();
+my $shopperip               = '1.2.3.4';
 my $cardcvc                 = 737;
-my $shopperemail            = 's.hopper@test.com';
-my $shopperreference        = 'Simon Hopper';
+my $shopperemail            = 'test@test.com';
+my $shopperreference        = rand();
 my $fraudoffset             = undef;
 my $selectedbrand           = undef;
 my $browserinfoacceptheader = 'text/html,application/xhtml+xml, application/xml;q=0.9,*/*;q=0.8';
@@ -101,5 +101,80 @@ cmp_deeply(
         'resultcode'    => 'Authorised',
         'pspreference'  => re('^\d+$')
     },
-    'Authorise_Payment_Request'
+    'Authorise_Payment_Request, card on file'
 );
+
+$request = {
+    _cardnumber              => $cardnumber,
+    _cardexpirymonth         => $cardexpirymonth,
+    _cardexpiryyear          => $cardexpiryyear,
+    _cardholdername          => $cardholdername,
+    _cardissuenumber         => undef,
+    _cardstartmonth          => undef,
+    _cardstartyear           => undef,
+    _psp                     => $merchant_account->{psp},
+    _merchantaccount         => $merchant_account->{merchantaccount},
+    _url                     => $merchant_account->{url},
+    _username                => $merchant_account->{username},
+    _password                => $merchant_account->{password},
+    _currencycode            => $currencycode,
+    _paymentamount           => $paymentamount,
+    _reference               => $reference,
+    _shopperip               => $shopperip,
+    _cardcvc                 => $cardcvc,
+    _shopperemail            => $shopperemail,
+    _shopperreference        => $shopperreference,
+    _fraudoffset             => $fraudoffset,
+    _selectedbrand           => $selectedbrand,
+    _browserinfoacceptheader => $browserinfoacceptheader,
+    _browserinfouseragent    => $browserinfouseragent
+};
+
+$response = $pci->authorise_payment_request($request);
+
+cmp_deeply(
+    $response,
+    {
+        'cardkey'       => re('^[a-f0-9]{512}$'),
+        'dccamount'     => undef,
+        'md'            => undef,
+        'authcode'      => re('^\d+$'),
+        'dccsignature'  => undef,
+        'fraudresult'   => undef,
+        'parequest'     => undef,
+        'refusalreason' => undef,
+        'issuerurl'     => undef,
+        'resultcode'    => 'Authorised',
+        'pspreference'  => re('^\d+$')
+    },
+    'Authorise_Payment_Request, new card'
+);
+
+# 3D Secure test card
+$request->{_cardnumber} = '5212345678901234';
+
+$response = $pci->authorise_payment_request($request);
+
+cmp_deeply(
+    $response,
+    {
+        'dccamount'     => undef,
+        'md'            => re('^[a-zA-Z0-9/+=]+$'),
+        'authcode'      => undef,
+        'cardkey'       => re('^[a-f0-9]{512}$'),
+        'dccsignature'  => undef,
+        'fraudresult'   => undef,
+        'parequest'     => re('^[a-zA-Z0-9/+=]+$'),
+        'refusalreason' => undef,
+        'issuerurl'     => re('^https://'),
+        'resultcode'    => 'RedirectShopper',
+        'pspreference'  => re('^\d+$')
+    },
+    'Authorise_Payment_Request, new card, 3D Secure'
+);
+
+$cardid = $nonpci->store_card_key({_cardkey => $response->{cardkey}});
+
+
+
+

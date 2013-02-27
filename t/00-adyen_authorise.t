@@ -32,18 +32,20 @@ cmp_deeply(
 );
 
 my $order = {
-    _merchantaccount  => $merchant_account->{merchantaccount},
-    _currencycode     => 'EUR',
-    _paymentamount    => 2000,
-    _reference        => 'Your Reference Here',
-    _shopperip        => '61.249.12.12',
-    _cardcvc          => 737,
-    _shopperemail     => 's.hopper@test.com',
-    _shopperreference => 'Simon Hopper',
-    _cardnumber       => 4111111111111111,
-    _cardexpirymonth  => 12,
-    _cardexpiryyear   => 2012,
-    _cardholdername   => 'Adyen Test'
+    _merchantaccount         => $merchant_account->{merchantaccount},
+    _currencycode            => 'EUR',
+    _paymentamount           => 2000,
+    _reference               => 'Your Reference Here',
+    _shopperip               => '61.249.12.12',
+    _cardcvc                 => 737,
+    _shopperemail            => 's.hopper@test.com',
+    _shopperreference        => 'Simon Hopper',
+    _cardnumber              => 4111111111111111,
+    _cardexpirymonth         => 06,
+    _cardexpiryyear          => 2016,
+    _cardholdername          => 'Adyen Test',
+    _browserinfoacceptheader => 'text/html,application/xhtml+xml, application/xml;q=0.9,*/*;q=0.8',
+    _browserinfouseragent    => 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9) Gecko/2008052912 Firefox/3.0'
 };
 
 
@@ -65,6 +67,10 @@ like($request_xml, qr!
                         <holderName>\Q$order->{_cardholdername}\E</holderName>\s*
                         <number>$order->{_cardnumber}</number>\s*
                     </card>\s*
+                    <browserInfo\ xmlns="http://payment\.services\.adyen\.com">\s*
+                        <acceptHeader\ xmlns="http://common\.services\.adyen\.com">\Q$order->{_browserinfoacceptheader}\E</acceptHeader>\s*
+                        <userAgent\ xmlns="http://common\.services\.adyen\.com">\Q$order->{_browserinfouseragent}\E</userAgent>\s*
+                    </browserInfo>\s*
                     <merchantAccount\ xmlns="http://payment\.services\.adyen\.com">\Q$order->{_merchantaccount}\E</merchantAccount>\s*
                     <reference\ xmlns="http://payment\.services\.adyen\.com">\Q$order->{_reference}\E</reference>\s*
                     <shopperEmail\ xmlns="http://payment\.services\.adyen\.com">\Q$order->{_shopperemail}\E</shopperEmail>\s*
