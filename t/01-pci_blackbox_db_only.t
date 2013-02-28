@@ -10,7 +10,7 @@ use Test::Deep;
 use Data::Dumper;
 use LWP::UserAgent;
 use File::Slurp qw(write_file);
-plan tests => 9;
+plan tests => 10;
 
 # Connect to the PCI compliant service
 my $dbh_pci = DBI->connect("dbi:Pg:dbname=pci", '', '', {pg_enable_utf8 => 1, PrintError => 0});
