@@ -190,7 +190,7 @@ $http_response = $ua->post('https://test.adyen.com/hpp/3d/authenticate.shtml', {
     TermUrl    => 'https://foo.bar.com/',
     MD         => $response->{md},
     cardNumber => $request->{_cardnumber},
-    username   => 'username',
+    username   => 'user',
     password   => 'password'
 });
 ok($http_response->is_success, "POST issuer URL, submit password");
@@ -216,8 +216,6 @@ $request = {
 
 $response = $pci->authorise_payment_request_3d($request);
 
-print Dumper $response;
-
 cmp_deeply(
     $response,
     {
@@ -226,6 +224,8 @@ cmp_deeply(
         'authcode'      => re('^\d+$'),
         'refusalreason' => undef
     },
-    'Authorise_Payment_Request_3D, submit payment response'
+    'Authorise_Payment_Request_3D, submit PaRes'
 );
+
+
 
