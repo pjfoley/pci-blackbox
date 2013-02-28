@@ -201,4 +201,31 @@ if ($http_response->decoded_content =~ m/<input type="hidden" name="PaRes" value
 my $pares = $1;
 
 
+$request = {
+    _psp                     => $merchant_account->{psp},
+    _merchantaccount         => $merchant_account->{merchantaccount},
+    _url                     => $merchant_account->{url},
+    _username                => $merchant_account->{username},
+    _password                => $merchant_account->{password},
+    _browserinfoacceptheader => $browserinfoacceptheader,
+    _browserinfouseragent    => $browserinfouseragent,
+    _issuermd                => $response->{md},
+    _issuerparesponse        => $pares,
+    _shopperip               => $shopperip
+};
+
+$response = $pci->authorise_payment_request_3d($request);
+
+print Dumper $response;
+
+cmp_deeply(
+    $response,
+    {
+        'pspreference'  => re('^\d+$'),
+        'resultcode'    => 'Authorised',
+        'authcode'      => re('^\d+$'),
+        'refusalreason' => undef
+    },
+    'Authorise_Payment_Request_3D, submit payment response'
+);
 
