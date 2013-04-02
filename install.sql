@@ -5,6 +5,9 @@ CREATE DATABASE nonpci;
 CREATE DATABASE pci;
 
 \c nonpci
+
+BEGIN;
+CREATE EXTENSION pgcrypto;
 \i nonpci/SEQUENCES/seqmerchantaccounts.sql
 \i nonpci/SEQUENCES/seqcards.sql
 \i nonpci/TABLES/merchantaccounts.sql
@@ -12,8 +15,11 @@ CREATE DATABASE pci;
 \i nonpci/FUNCTIONS/get_merchant_account.sql
 \i nonpci/FUNCTIONS/store_card_key.sql
 \i nonpci/populate.sql
+COMMIT;
 
 \c pci
+
+BEGIN;
 CREATE LANGUAGE plperlu;
 CREATE EXTENSION pgcrypto;
 \i pci/TABLES/encryptedcards.sql
@@ -28,6 +34,4 @@ CREATE EXTENSION pgcrypto;
 \i pci/FUNCTIONS/http_post_xml.sql
 \i pci/FUNCTIONS/parse_adyen_authorise_response.sql
 \i pci/FUNCTIONS/parse_adyen_authorise_response_3d.sql
-
-
-
+COMMIT;

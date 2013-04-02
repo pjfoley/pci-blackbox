@@ -1,5 +1,6 @@
 CREATE TABLE EncryptedCards (
-CardHash bytea not null,
+CardKeyHash bytea not null,
+CardHash text not null,
 CardData bytea not null,
-PRIMARY KEY (CardHash)
+PRIMARY KEY (CardKeyHash)
 );

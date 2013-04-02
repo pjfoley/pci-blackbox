@@ -106,6 +106,7 @@ $BODY$ LANGUAGE plpgsql VOLATILE;
 
 
 CREATE OR REPLACE FUNCTION Authorise_Payment_Request(
+OUT CardHash text,
 OUT CardKey text,
 OUT AuthCode integer,
 OUT DCCAmount numeric,
@@ -139,21 +140,29 @@ _ShopperReference text,
 _FraudOffset integer,
 _SelectedBrand text,
 _BrowserInfoAcceptHeader text,
-_BrowserInfoUserAgent text
+_BrowserInfoUserAgent text,
+_HashSalt text
 ) RETURNS RECORD AS $BODY$
 DECLARE
 _XMLRequest xml;
 _XMLResponse xml;
 BEGIN
 
-CardKey := Encrypt_Card(
+SELECT
+    Encrypt_Card.CardHash,
+    Encrypt_Card.CardKey
+INTO STRICT
+    Authorise_Payment_Request.CardHash,
+    Authorise_Payment_Request.CardKey
+FROM Encrypt_Card(
     _CardNumber,
     _CardExpiryMonth,
     _CardExpiryYear,
     _CardHolderName,
     _CardIssueNumber,
     _CardStartMonth,
-    _CardStartYear
+    _CardStartYear,
+    _HashSalt
 );
 
 IF _PSP = 'Adyen' THEN

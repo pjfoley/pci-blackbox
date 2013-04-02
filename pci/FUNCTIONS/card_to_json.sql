@@ -21,5 +21,5 @@ return JSON::to_json({
    cardissuenumber => shift,
    cardstartmonth  => shift,
    cardstartyear   => shift
-});
+}, {canonical => 1});
 $BODY$ LANGUAGE plperlu;

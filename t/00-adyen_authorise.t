@@ -26,7 +26,8 @@ cmp_deeply(
         merchantaccount => re('.+'),
         url             => re('^https://'),
         username        => re('.+'),
-        password        => re('.+')
+        password        => re('.+'),
+        hashsalt        => re('.+')
     },
     'Get_Merchant_Account'
 );
