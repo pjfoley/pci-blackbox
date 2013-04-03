@@ -1,7 +1,7 @@
 #!/bin/sh
 if [ -e nonpci/populate.sql ]
     then
-        psql -f install.sql
+        sudo -u postgres psql -f install.sql
         prove
     else
         echo "!!!! IMPORTANT !!!"
