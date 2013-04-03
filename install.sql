@@ -22,6 +22,8 @@ COMMIT;
 BEGIN;
 CREATE LANGUAGE plperlu;
 CREATE EXTENSION pgcrypto;
+CREATE EXTENSION "uuid-ossp";
+\i pci/TABLES/cardnumberreferences.sql
 \i pci/TABLES/encryptedcards.sql
 \i pci/TABLES/encryptedcvcs.sql
 \i pci/FUNCTIONS/encrypt_card.sql

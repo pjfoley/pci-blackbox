@@ -70,10 +70,10 @@ my $encrypted_card = $pci->encrypt_card({
 cmp_deeply(
     $encrypted_card,
     {
-        cardkey      => re('^[0-9a-f]{512}$'),
-        cardkeyhash  => re('^[0-9a-f]{128}$'),
-        cardbin      => re('^[0-9]{6}$'),
-        cardlast4    => re('^[0-9]{4}$')
+        cardnumberreference => re('^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$'),
+        cardkey             => re('^[0-9a-f]{512}$'),
+        cardbin             => re('^[0-9]{6}$'),
+        cardlast4           => re('^[0-9]{4}$')
     },
     'Encrypt_Card, non-3D Secure enrolled card'
 );
@@ -81,7 +81,12 @@ cmp_deeply(
 my $cvckey = $pci->encrypt_cvc({_cardcvc => $cardcvc});
 like($cvckey,qr/^[0-9a-f]{512}$/,"Encrypt_CVC, non-3D Secure enrolled card");
 
-my $cardid = $nonpci->store_card_key({_cardkeyhash => $encrypted_card->{cardkeyhash}, _cardkey => $encrypted_card->{cardkey}, _cardbin => $encrypted_card->{cardbin}, _cardlast4 => $encrypted_card->{cardlast4}});
+my $cardid = $nonpci->store_card_key({
+    _cardnumberreference => $encrypted_card->{cardnumberreference},
+    _cardkey             => $encrypted_card->{cardkey},
+    _cardbin             => $encrypted_card->{cardbin},
+    _cardlast4           => $encrypted_card->{cardlast4}
+});
 cmp_ok($cardid,'>=',1,"Store_Card_Key, non-3D Secure enrolled card");
 
 my $request = {
@@ -144,17 +149,22 @@ $encrypted_card = $pci->encrypt_card({
 cmp_deeply(
     $encrypted_card,
     {
-        cardkey      => re('^[0-9a-f]{512}$'),
-        cardkeyhash  => re('^[0-9a-f]{128}$'),
-        cardbin      => re('^[0-9]{6}$'),
-        cardlast4    => re('^[0-9]{4}$')
+        cardnumberreference => re('^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$'),
+        cardkey             => re('^[0-9a-f]{512}$'),
+        cardbin             => re('^[0-9]{6}$'),
+        cardlast4           => re('^[0-9]{4}$')
     },
     'Encrypt_Card, 3D Secure enrolled card'
 );
 $cvckey = $pci->encrypt_cvc({_cardcvc => $cardcvc});
 like($cvckey,qr/^[0-9a-f]{512}$/,"Encrypt_CVC, 3D Secure enrolled card");
 
-$cardid = $nonpci->store_card_key({_cardkeyhash => $encrypted_card->{cardkeyhash}, _cardkey => $encrypted_card->{cardkey}, _cardbin => $encrypted_card->{cardbin}, _cardlast4 => $encrypted_card->{cardlast4}});
+$cardid = $nonpci->store_card_key({
+    _cardnumberreference => $encrypted_card->{cardnumberreference},
+    _cardkey             => $encrypted_card->{cardkey},
+    _cardbin             => $encrypted_card->{cardbin},
+    _cardlast4           => $encrypted_card->{cardlast4}
+});
 cmp_ok($cardid,'>=',1,"Store_Card_Key, 3D Secure enrolled card");
 
 $request = {
@@ -245,5 +255,5 @@ cmp_deeply(
     'Authorise_Payment_Request_3D, submit PaRes'
 );
 
-$dbh->commit;
-$dbh_pci->commit;
+$dbh->rollback;
+$dbh_pci->rollback;
