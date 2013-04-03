@@ -16,13 +16,13 @@ plan tests => 8;
 
 
 # Connect to the isolated PCI compliant pci-blackbox
-my $dbh_pci = DBI->connect("dbi:Pg:dbname=pci", 'pci', '', {pg_enable_utf8 => 1, PrintError => 0});
+my $dbh_pci = DBI->connect("dbi:Pg:dbname=pci", '', '', {pg_enable_utf8 => 1, PrintError => 0});
 my $pci = DBIx::Pg::CallFunction->new($dbh_pci);
 
 
 
 # Connect to the normal database
-my $dbh = DBI->connect("dbi:Pg:dbname=nonpci", 'nonpci', '', {pg_enable_utf8 => 1, PrintError => 0});
+my $dbh = DBI->connect("dbi:Pg:dbname=nonpci", '', '', {pg_enable_utf8 => 1, PrintError => 0});
 my $nonpci = DBIx::Pg::CallFunction->new($dbh);
 
 

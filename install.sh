@@ -2,7 +2,7 @@
 if [ -e nonpci/populate.sql ]
     then
         sudo -u postgres psql -f install.sql
-        prove
+        sudo -u www-data prove
     else
         echo "!!!! IMPORTANT !!!"
         echo
