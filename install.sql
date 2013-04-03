@@ -28,6 +28,7 @@ CREATE EXTENSION "uuid-ossp";
 \i pci/TABLES/encryptedcvcs.sql
 \i pci/FUNCTIONS/encrypt_card.sql
 \i pci/FUNCTIONS/encrypt_cvc.sql
+\i pci/FUNCTIONS/encrypt_card_cvc.sql
 \i pci/FUNCTIONS/card_to_json.sql
 \i pci/FUNCTIONS/authorise_payment_request.sql
 \i pci/FUNCTIONS/authorise_payment_request_3d.sql

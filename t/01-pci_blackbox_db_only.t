@@ -10,7 +10,7 @@ use Test::Deep;
 use Data::Dumper;
 use LWP::UserAgent;
 use File::Slurp qw(write_file);
-plan tests => 13;
+plan tests => 12;
 
 # Connect to the PCI compliant service
 my $dbh_pci = DBI->connect("dbi:Pg:dbname=pci", '', '', {pg_enable_utf8 => 1, PrintError => 0});
@@ -135,7 +135,7 @@ cmp_deeply(
 # Store sensitive card data encrypted to the
 # PCI-DSS compliant protected component
 $cardnumber = '5212345678901234';
-$encrypted_card = $pci->encrypt_card({
+$encrypted_card = $pci->encrypt_card_cvc({
     _cardnumber      => $cardnumber,
     _cardexpirymonth => $cardexpirymonth,
     _cardexpiryyear  => $cardexpiryyear,
@@ -143,7 +143,8 @@ $encrypted_card = $pci->encrypt_card({
     _cardissuenumber => undef,
     _cardstartmonth  => undef,
     _cardstartyear   => undef,
-    _hashsalt        => $merchant_account->{hashsalt}
+    _hashsalt        => $merchant_account->{hashsalt},
+    _cardcvc         => $cardcvc
 });
 
 cmp_deeply(
@@ -152,12 +153,11 @@ cmp_deeply(
         cardnumberreference => re('^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$'),
         cardkey             => re('^[0-9a-f]{512}$'),
         cardbin             => re('^[0-9]{6}$'),
-        cardlast4           => re('^[0-9]{4}$')
+        cardlast4           => re('^[0-9]{4}$'),
+        cvckey              => re('^[0-9a-f]{512}$')
     },
-    'Encrypt_Card, 3D Secure enrolled card'
+    'Encrypt_Card_CVC, 3D Secure enrolled card'
 );
-$cvckey = $pci->encrypt_cvc({_cardcvc => $cardcvc});
-like($cvckey,qr/^[0-9a-f]{512}$/,"Encrypt_CVC, 3D Secure enrolled card");
 
 $cardid = $nonpci->store_card_key({
     _cardnumberreference => $encrypted_card->{cardnumberreference},
@@ -169,7 +169,7 @@ cmp_ok($cardid,'>=',1,"Store_Card_Key, 3D Secure enrolled card");
 
 $request = {
     _cardkey                 => $encrypted_card->{cardkey},
-    _cvckey                  => $cvckey,
+    _cvckey                  => $encrypted_card->{cvckey},
     _psp                     => $merchant_account->{psp},
     _merchantaccount         => $merchant_account->{merchantaccount},
     _url                     => $merchant_account->{url},
