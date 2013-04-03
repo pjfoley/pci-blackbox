@@ -7,7 +7,11 @@ PCI-DSS compliant card system built on PostgreSQL and PL/pgSQL
 Assumes clean OS. Skip packages you already have.
 
 ### 1. Install necessary packages
-    sudo apt-get install cpanminus build-essential postgresql-9.1 postgresql-contrib-9.1 postgresql-plperl-9.1 libplack-perl libdbd-pg-perl libjson-perl libmodule-install-perl libtest-exception-perl libapache2-mod-perl2 apache2-mpm-prefork git-core libtest-deep-perl libfile-slurp-perl libwww-curl-perl
+    sudo apt-get install cpanminus build-essential postgresql-9.1 \
+    postgresql-contrib-9.1 postgresql-plperl-9.1 libplack-perl libdbd-pg-perl \
+    libjson-perl libmodule-install-perl libtest-exception-perl \
+    libapache2-mod-perl2 apache2-mpm-prefork git-core libtest-deep-perl \
+    libfile-slurp-perl libwww-curl-perl
 
 ### 2. Create a database and database user for our shell user
     sudo -u postgres createuser --superuser $USER
@@ -17,7 +21,8 @@ Assumes clean OS. Skip packages you already have.
     psql -c "SELECT 'Hello world'"
 
 ### 4. Create database user for apache
-    sudo -u postgres createuser --no-superuser --no-createrole --no-createdb www-data
+    sudo -u postgres createuser --no-superuser --no-createrole \
+    --no-createdb www-data
 
 ### 5. Download and build DBIx::Pg::CallFunction
     cpanm --sudo DBIx::Pg::CallFunction
@@ -26,7 +31,8 @@ Assumes clean OS. Skip packages you already have.
     psql -c "GRANT CONNECT ON DATABASE $USER TO \"www-data\""
 
 ### 7. Configure pg_service.conf
-    sudo cp -n /usr/share/postgresql/9.1/pg_service.conf.sample /etc/postgresql-common/pg_service.conf
+    sudo cp -n /usr/share/postgresql/9.1/pg_service.conf.sample \
+    /etc/postgresql-common/pg_service.conf
 
     echo "
     [pg_proc_jsonrpc]
@@ -56,7 +62,8 @@ is a new installation, such as `/etc/apache2/sites-enabled/000-default`
 ### 10. Install pci-blackbox
     git clone git://github.com/joelonsql/pci-blackbox.git
     cd pci-blackbox
-    echo "INSERT INTO MerchantAccounts (PSP, MerchantAccount, URL, Username, Password) VALUES ('Adyen', 'YourCompanyCOM', 'https://pal-test.adyen.com/pal/servlet/soap/Payment', 'ws@Company.YourCompanyInc', 's3cr3tp4ssw0rd');" > nonpci/populate.sql
+    echo "INSERT INTO MerchantAccounts (PSP, MerchantAccount, URL, Username, Password) \
+    VALUES ('Adyen', 'YourCompanyCOM', 'https://pal-test.adyen.com/pal/servlet/soap/Payment', 'ws@Company.YourCompanyInc', 's3cr3tp4ssw0rd');" > nonpci/populate.sql
     ./install.sh
 
 ### 11. Done!
