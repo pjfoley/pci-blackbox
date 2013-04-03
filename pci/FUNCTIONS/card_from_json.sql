@@ -14,4 +14,4 @@ use warnings;
 use JSON;
 
 return JSON::from_json(shift);
-$BODY$ LANGUAGE plperlu;
+$BODY$ LANGUAGE plperlu IMMUTABLE;

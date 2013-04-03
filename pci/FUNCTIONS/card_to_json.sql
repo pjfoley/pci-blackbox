@@ -22,4 +22,4 @@ return JSON::to_json({
    cardstartmonth  => shift,
    cardstartyear   => shift
 }, {canonical => 1});
-$BODY$ LANGUAGE plperlu;
+$BODY$ LANGUAGE plperlu IMMUTABLE;
