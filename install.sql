@@ -1,3 +1,4 @@
+
 DROP DATABASE nonpci;
 DROP DATABASE pci;
 
@@ -14,6 +15,9 @@ CREATE EXTENSION pgcrypto;
 \i nonpci/TABLES/cards.sql
 \i nonpci/FUNCTIONS/get_merchant_account.sql
 \i nonpci/FUNCTIONS/store_card_key.sql
+COMMIT;
+
+BEGIN;
 \i nonpci/populate.sql
 COMMIT;
 
@@ -41,3 +45,4 @@ CREATE EXTENSION "uuid-ossp";
 \i pci/FUNCTIONS/parse_adyen_authorise_response.sql
 \i pci/FUNCTIONS/parse_adyen_authorise_response_3d.sql
 COMMIT;
+
