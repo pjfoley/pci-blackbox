@@ -43,3 +43,6 @@ SELECT Encrypt_CVC.CVCKey INTO STRICT Encrypt_Card_CVC.CVCKey FROM Encrypt_CVC(_
 RETURN;
 END;
 $BODY$ LANGUAGE plpgsql VOLATILE SECURITY DEFINER;
+
+REVOKE ALL ON FUNCTION Encrypt_Card_CVC(_CardNumber text, _CardExpiryMonth integer, _CardExpiryYear integer, _CardHolderName text, _CardIssueNumber integer, _CardStartMonth integer, _CardStartYear integer, _HashSalt text, _CardCVC text) FROM PUBLIC;
+GRANT  ALL ON FUNCTION Encrypt_Card_CVC(_CardNumber text, _CardExpiryMonth integer, _CardExpiryYear integer, _CardHolderName text, _CardIssueNumber integer, _CardStartMonth integer, _CardStartYear integer, _HashSalt text, _CardCVC text) TO "www-data";

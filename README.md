@@ -14,21 +14,23 @@ Assumes clean OS. Skip packages you already have.
     libfile-slurp-perl libwww-curl-perl
 
 ### 2. Create a database and database user for our shell user
-    sudo -u postgres createuser --superuser $USER
+    sudo -u postgres createuser --no-superuser --no-createrole --createdb $USER
     sudo -u postgres createdb --owner=$USER $USER
 
 ### 3. Try to connect
     psql -c "SELECT 'Hello world'"
 
 ### 4. Create database user for apache
-    sudo -u postgres createuser --no-superuser --no-createrole \
-    --no-createdb www-data
+    sudo -u postgres createuser --no-superuser --no-createrole --no-createdb www-data
 
 ### 5. Download and build DBIx::Pg::CallFunction
     cpanm --sudo DBIx::Pg::CallFunction
 
-### 6. Grant access to connect to our database
-    psql -c "GRANT CONNECT ON DATABASE $USER TO \"www-data\""
+### 6. Install pci-blackbox
+    git clone git://github.com/joelonsql/pci-blackbox.git
+    cd pci-blackbox
+    # echo "INSERT INTO MerchantAccounts VALUES (?,?,?,?);" > nonpci/populate.sql
+    ./install.sh
 
 ### 7. Configure pg_service.conf
     sudo cp -n /usr/share/postgresql/9.1/pg_service.conf.sample \
@@ -37,7 +39,7 @@ Assumes clean OS. Skip packages you already have.
     echo "
     [pg_proc_jsonrpc]
     application_name=pg_proc_jsonrpc
-    dbname=$USER
+    dbname=pci
     " | sudo sh -c 'cat - >> /etc/postgresql-common/pg_service.conf'
 
 ### 8. Configure Apache
@@ -58,12 +60,5 @@ is a new installation, such as `/etc/apache2/sites-enabled/000-default`
 
 ### 9. Restart Apache
     sudo service apache2 restart
-
-### 10. Install pci-blackbox
-    git clone git://github.com/joelonsql/pci-blackbox.git
-    cd pci-blackbox
-    echo "INSERT INTO MerchantAccounts (PSP, MerchantAccount, URL, Username, Password) \
-    VALUES ('Adyen', 'YourCompanyCOM', 'https://pal-test.adyen.com/pal/servlet/soap/Payment', 'ws@Company.YourCompanyInc', 's3cr3tp4ssw0rd');" > nonpci/populate.sql
-    ./install.sh
 
 ### 11. Done!
