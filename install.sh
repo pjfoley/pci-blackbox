@@ -2,6 +2,7 @@
 if [ -e nonpci/populate.sql ]
     then
         psql -f install.sql
+        prove
     else
         echo "!!!! IMPORTANT !!!"
         echo
