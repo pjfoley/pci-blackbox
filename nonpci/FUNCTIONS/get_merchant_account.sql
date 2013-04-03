@@ -27,4 +27,7 @@ IF NOT FOUND THEN
     RAISE EXCEPTION 'ERROR_MERCHANT_ACCOUNT_NOT_FOUND No merchant account found, you need to populate the table MerchantAccounts';
 END IF;
 END;
-$BODY$ LANGUAGE plpgsql;
+$BODY$ LANGUAGE plpgsql STABLE SECURITY DEFINER;
+
+REVOKE ALL ON FUNCTION Get_Merchant_Account() FROM PUBLIC;
+GRANT  ALL ON FUNCTION Get_Merchant_Account() TO "www-data";
