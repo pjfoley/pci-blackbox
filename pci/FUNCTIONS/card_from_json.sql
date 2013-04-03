@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION Card_From_JSON(
-OUT CardNumber bigint,
+OUT CardNumber text,
 OUT CardExpiryMonth integer,
 OUT CardExpiryYear integer,
 OUT CardHolderName text,

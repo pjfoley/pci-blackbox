@@ -10,7 +10,7 @@ use Test::Deep;
 use Data::Dumper;
 use LWP::UserAgent;
 use File::Slurp qw(write_file);
-plan tests => 10;
+plan tests => 13;
 
 # Connect to the PCI compliant service
 my $dbh_pci = DBI->connect("dbi:Pg:dbname=pci", '', '', {pg_enable_utf8 => 1, PrintError => 0});
@@ -70,19 +70,23 @@ my $encrypted_card = $pci->encrypt_card({
 cmp_deeply(
     $encrypted_card,
     {
-        cardkey  => re('^[0-9a-f]{512}$'),
-        cardhash => re('.+')
+        cardkey      => re('^[0-9a-f]{512}$'),
+        cardkeyhash  => re('^[0-9a-f]{128}$'),
+        cardbin      => re('^[0-9]{6}$'),
+        cardlast4    => re('^[0-9]{4}$')
     },
-    'Encrypt_Card'
+    'Encrypt_Card, non-3D Secure enrolled card'
 );
-my $cardhash = $encrypted_card->{cardhash};
-my $cardkey  = $encrypted_card->{cardkey};
 
-my $cardid = $nonpci->store_card_key({_cardhash => $cardhash, _cardkey => $cardkey});
-cmp_ok($cardid,'>=',1,"Store_Card_Key");
+my $cvckey = $pci->encrypt_cvc({_cardcvc => $cardcvc});
+like($cvckey,qr/^[0-9a-f]{512}$/,"Encrypt_CVC, non-3D Secure enrolled card");
+
+my $cardid = $nonpci->store_card_key({_cardkeyhash => $encrypted_card->{cardkeyhash}, _cardkey => $encrypted_card->{cardkey}, _cardbin => $encrypted_card->{cardbin}, _cardlast4 => $encrypted_card->{cardlast4}});
+cmp_ok($cardid,'>=',1,"Store_Card_Key, non-3D Secure enrolled card");
 
 my $request = {
-    _cardkey                 => $cardkey,
+    _cardkey                 => $encrypted_card->{cardkey},
+    _cvckey                  => $cvckey,
     _psp                     => $merchant_account->{psp},
     _merchantaccount         => $merchant_account->{merchantaccount},
     _url                     => $merchant_account->{url},
@@ -92,7 +96,6 @@ my $request = {
     _paymentamount           => $paymentamount,
     _reference               => $reference,
     _shopperip               => $shopperip,
-    _cardcvc                 => $cardcvc,
     _shopperemail            => $shopperemail,
     _shopperreference        => $shopperreference,
     _fraudoffset             => $fraudoffset,
@@ -119,17 +122,44 @@ cmp_deeply(
         'resultcode'    => 'Authorised',
         'pspreference'  => re('^\d+$')
     },
-    'Authorise_Payment_Request, card on file'
+    'Authorise_Payment_Request, non-3D Secure enrolled card'
 );
 
+# 3D Secure test card
+
+# Store sensitive card data encrypted to the
+# PCI-DSS compliant protected component
+$cardnumber = '5212345678901234';
+$encrypted_card = $pci->encrypt_card({
+    _cardnumber      => $cardnumber,
+    _cardexpirymonth => $cardexpirymonth,
+    _cardexpiryyear  => $cardexpiryyear,
+    _cardholdername  => $cardholdername,
+    _cardissuenumber => undef,
+    _cardstartmonth  => undef,
+    _cardstartyear   => undef,
+    _hashsalt        => $merchant_account->{hashsalt}
+});
+
+cmp_deeply(
+    $encrypted_card,
+    {
+        cardkey      => re('^[0-9a-f]{512}$'),
+        cardkeyhash  => re('^[0-9a-f]{128}$'),
+        cardbin      => re('^[0-9]{6}$'),
+        cardlast4    => re('^[0-9]{4}$')
+    },
+    'Encrypt_Card, 3D Secure enrolled card'
+);
+$cvckey = $pci->encrypt_cvc({_cardcvc => $cardcvc});
+like($cvckey,qr/^[0-9a-f]{512}$/,"Encrypt_CVC, 3D Secure enrolled card");
+
+$cardid = $nonpci->store_card_key({_cardkeyhash => $encrypted_card->{cardkeyhash}, _cardkey => $encrypted_card->{cardkey}, _cardbin => $encrypted_card->{cardbin}, _cardlast4 => $encrypted_card->{cardlast4}});
+cmp_ok($cardid,'>=',1,"Store_Card_Key, 3D Secure enrolled card");
+
 $request = {
-    _cardnumber              => $cardnumber,
-    _cardexpirymonth         => $cardexpirymonth,
-    _cardexpiryyear          => $cardexpiryyear,
-    _cardholdername          => $cardholdername,
-    _cardissuenumber         => undef,
-    _cardstartmonth          => undef,
-    _cardstartyear           => undef,
+    _cardkey                 => $encrypted_card->{cardkey},
+    _cvckey                  => $cvckey,
     _psp                     => $merchant_account->{psp},
     _merchantaccount         => $merchant_account->{merchantaccount},
     _url                     => $merchant_account->{url},
@@ -139,39 +169,13 @@ $request = {
     _paymentamount           => $paymentamount,
     _reference               => $reference,
     _shopperip               => $shopperip,
-    _cardcvc                 => $cardcvc,
     _shopperemail            => $shopperemail,
     _shopperreference        => $shopperreference,
     _fraudoffset             => $fraudoffset,
     _selectedbrand           => $selectedbrand,
     _browserinfoacceptheader => $browserinfoacceptheader,
-    _browserinfouseragent    => $browserinfouseragent,
-    _hashsalt                => $merchant_account->{hashsalt}
+    _browserinfouseragent    => $browserinfouseragent
 };
-
-$response = $pci->authorise_payment_request($request);
-
-cmp_deeply(
-    $response,
-    {
-        'cardkey'       => undef,
-        'dccamount'     => undef,
-        'md'            => undef,
-        'authcode'      => re('^\d+$'),
-        'dccsignature'  => undef,
-        'fraudresult'   => undef,
-        'parequest'     => undef,
-        'refusalreason' => undef,
-        'issuerurl'     => undef,
-        'resultcode'    => 'Authorised',
-        'pspreference'  => re('^\d+$'),
-        'cardhash'      => $cardhash
-    },
-    'Authorise_Payment_Request, existing card'
-);
-
-# 3D Secure test card
-$request->{_cardnumber} = '5212345678901234';
 
 $response = $pci->authorise_payment_request($request);
 
@@ -181,20 +185,16 @@ cmp_deeply(
         'dccamount'     => undef,
         'md'            => re('^[a-zA-Z0-9/+=]+$'),
         'authcode'      => undef,
-        'cardkey'       => re('^[a-f0-9]{512}$'),
         'dccsignature'  => undef,
         'fraudresult'   => undef,
         'parequest'     => re('^[a-zA-Z0-9/+=]+$'),
         'refusalreason' => undef,
         'issuerurl'     => re('^https://'),
         'resultcode'    => 'RedirectShopper',
-        'pspreference'  => re('^\d+$'),
-        'cardhash'      => re('.+')
+        'pspreference'  => re('^\d+$')
     },
-    'Authorise_Payment_Request, new card, 3D Secure'
+    'Authorise_Payment_Request, 3D Secure enrolled card'
 );
-
-$cardid = $nonpci->store_card_key({_cardhash => $response->{cardhash}, _cardkey => $response->{cardkey}});
 
 my $ua = LWP::UserAgent->new();
 my $http_response = $ua->post($response->{issuerurl}, {
@@ -208,7 +208,7 @@ $http_response = $ua->post('https://test.adyen.com/hpp/3d/authenticate.shtml', {
     PaReq      => $response->{parequest},
     TermUrl    => 'https://foo.bar.com/',
     MD         => $response->{md},
-    cardNumber => $request->{_cardnumber},
+    cardNumber => $cardnumber,
     username   => 'user',
     password   => 'password'
 });
@@ -218,7 +218,6 @@ if ($http_response->decoded_content =~ m/<input type="hidden" name="PaRes" value
     ok(1,"POST issuer URL, parsed PaRes");
 }
 my $pares = $1;
-
 
 $request = {
     _psp                     => $merchant_account->{psp},
@@ -246,5 +245,5 @@ cmp_deeply(
     'Authorise_Payment_Request_3D, submit PaRes'
 );
 
-$dbh->rollback;
-$dbh_pci->rollback;
+$dbh->commit;
+$dbh_pci->commit;

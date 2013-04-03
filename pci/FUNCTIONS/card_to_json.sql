@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION Card_To_JSON(
 OUT CardJSON text,
-_CardNumber bigint,
+_CardNumber text,
 _CardExpiryMonth integer,
 _CardExpiryYear integer,
 _CardHolderName text,

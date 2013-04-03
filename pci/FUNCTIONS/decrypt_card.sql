@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION Decrypt_Card(
-OUT CardNumber bigint,
+OUT CardNumber text,
 OUT CardExpiryMonth integer,
 OUT CardExpiryYear integer,
 OUT CardHolderName text,
