@@ -13,10 +13,11 @@ use DBIx::Pg::CallFunction;
 
 plan tests => 3;
 
-my $nonpci = JSON::RPC::Simple::Client->new('http://localhost:30001/nonpci');
-my $pci = JSON::RPC::Simple::Client->new('http://localhost:30002/pci');
+my $nonpci = JSON::RPC::Simple::Client->new('https://localhost:30001/nonpci');
+my $pci    = JSON::RPC::Simple::Client->new('https://localhost:30002/pci');
 
-
+$nonpci->{ua}->ssl_opts(verify_hostname => 0);
+$pci->{ua}->ssl_opts(verify_hostname => 0);
 
 # Variables used throughout the test
 my $cardnumber              = '5212345678901234';
@@ -40,15 +41,15 @@ like($hashsalt, qr{^\$2a\$08\$[a-zA-Z0-9./]{22}$}, 'Get_Hash_Salt');
 
 # Test 2, Encrypt_Card
 my $encrypted_card = $pci->encrypt_card({
-    _cardnumber      => $cardnumber,
-    _cardexpirymonth => $cardexpirymonth,
-    _cardexpiryyear  => $cardexpiryyear,
-    _cardholdername  => $cardholdername,
-    _cardissuenumber => undef,
-    _cardstartmonth  => undef,
-    _cardstartyear   => undef,
-    _hashsalt        => $hashsalt,
-    _cardcvc         => $cardcvc
+    cardnumber      => $cardnumber,
+    cardexpirymonth => $cardexpirymonth,
+    cardexpiryyear  => $cardexpiryyear,
+    cardholdername  => $cardholdername,
+    cardissuenumber => undef,
+    cardstartmonth  => undef,
+    cardstartyear   => undef,
+    hashsalt        => $hashsalt,
+    cardcvc         => $cardcvc
 });
 cmp_deeply(
     $encrypted_card,
@@ -66,19 +67,19 @@ cmp_deeply(
 
 # Test 3, Authorise
 my $request_authorise = {
-    _orderid                 => 1234567890,
-    _currencycode            => $currencycode,
-    _paymentamount           => $paymentamount,
-    _cardnumberreference     => $encrypted_card->{cardnumberreference},
-    _cardkey                 => $encrypted_card->{cardkey},
-    _cardbin                 => $encrypted_card->{cardbin},
-    _cardlast4               => $encrypted_card->{cardlast4},
-    _cvckey                  => $encrypted_card->{cvckey},
-    _hashsalt                => $hashsalt,
+    orderid                 => 1234567890,
+    currencycode            => $currencycode,
+    paymentamount           => $paymentamount,
+    cardnumberreference     => $encrypted_card->{cardnumberreference},
+    cardkey                 => $encrypted_card->{cardkey},
+    cardbin                 => $encrypted_card->{cardbin},
+    cardlast4               => $encrypted_card->{cardlast4},
+    cvckey                  => $encrypted_card->{cvckey},
+    hashsalt                => $hashsalt,
     # these are overwritten by pci-blackbox.psgi:
-    _remote_addr             => undef,
-    _http_user_agent         => undef,
-    _http_accept             => undef
+    remote_addr             => undef,
+    http_user_agent         => undef,
+    http_accept             => undef
 };
 my $authorise_request_id = $nonpci->authorise($request_authorise);
 like($authorise_request_id, qr/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/, 'Authorise');

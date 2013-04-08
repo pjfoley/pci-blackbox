@@ -34,6 +34,12 @@ my ($PCIBlackBoxURL, $CardKey, $CVCKey, $PSP, $MerchantAccount, $URL, $Username,
 
 use JSON::RPC::Simple::Client;
 my $c = JSON::RPC::Simple::Client->new($PCIBlackBoxURL);
+
+if ($PCIBlackBoxURL =~ m!^https://localhost!i) {
+    # Test-environment or local call, skip check
+    $c->{ua}->ssl_opts(verify_hostname => 0);
+}
+
 my $r = $c->authorise_payment_request({
     _cardkey                 => $CardKey,
     _cvckey                  => $CVCKey,
