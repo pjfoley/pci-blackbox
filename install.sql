@@ -17,7 +17,7 @@ CREATE EXTENSION pgcrypto;
 CREATE EXTENSION "uuid-ossp";
 
 -- plperlu functions, can only be created by superusers
-\i nonpci/functions/authorise_payment_request_json_rpc.sql
+\i nonpci/FUNCTIONS/authorise_payment_request_json_rpc.sql
 
 SET ROLE TO nonpci;
 
