@@ -23,8 +23,8 @@ Assumes clean OS. Skip packages you already have.
 ### 4. Create database user for apache
     sudo -u postgres createuser --no-superuser --no-createrole --no-createdb www-data
 
-### 5. Download and build DBIx::Pg::CallFunction
-    cpanm --sudo DBIx::Pg::CallFunction
+### 5. Download and build Perl modules not in the Ubuntu repo
+    cpanm --sudo DBIx::Pg::CallFunction JSON::RPC::Simple::Client
 
 ### 6. Install pci-blackbox
     git clone git://github.com/joelonsql/pci-blackbox.git
