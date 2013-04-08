@@ -67,8 +67,8 @@ my $app = sub {
     }
     my ($namespace, $function_name) = ($1, $2);
 
-    foreach my $k ('REMOTE_ADDR','HTTP_USER_AGENT','HTTP_ACCEPT') {
-        if (exists $params->{lc($k)}) {
+    if ($function_name eq 'authorise' && !defined $namespace) {
+        foreach my $k ('REMOTE_ADDR','HTTP_USER_AGENT','HTTP_ACCEPT') {
             $params->{lc($k)} = $env->{$k};
         }
     }
