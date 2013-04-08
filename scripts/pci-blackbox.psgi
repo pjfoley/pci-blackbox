@@ -76,6 +76,9 @@ my $app = sub {
     my $callback;
     if (exists $params->{callback}) {
         $callback = delete $params->{callback};
+        if (exists $params->{_}) {
+            delete $params->{_};
+        }
     }
 
     my $service = $env->{'psgi.input'}->dir_config('pg_service_name');
