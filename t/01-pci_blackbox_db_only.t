@@ -14,11 +14,11 @@ use File::Slurp qw(write_file);
 plan tests => 8;
 
 # Connect to the isolated PCI compliant pci-blackbox
-my $dbh_pci = DBI->connect("dbi:Pg:dbname=pci", '', '', {pg_enable_utf8 => 1, PrintError => 0});
+my $dbh_pci = DBI->connect("dbi:Pg:dbname=pci", 'pci', '', {pg_enable_utf8 => 1, PrintError => 0});
 my $pci = DBIx::Pg::CallFunction->new($dbh_pci);
 
 # Connect to the normal database
-my $dbh = DBI->connect("dbi:Pg:dbname=nonpci", '', '', {pg_enable_utf8 => 1, PrintError => 0});
+my $dbh = DBI->connect("dbi:Pg:dbname=nonpci", 'nonpci', '', {pg_enable_utf8 => 1, PrintError => 0});
 my $nonpci = DBIx::Pg::CallFunction->new($dbh);
 
 
@@ -57,8 +57,7 @@ cmp_deeply(
         merchantaccount => re('.+'),
         url             => re('^https://'),
         username        => re('.+'),
-        password        => re('.+'),
-        hashsalt        => re('.+')
+        password        => re('.+')
     },
     'Get_Merchant_Account'
 );
@@ -74,7 +73,6 @@ my $encrypted_card = $pci->encrypt_card({
     _cardissuenumber => undef,
     _cardstartmonth  => undef,
     _cardstartyear   => undef,
-    _hashsalt        => $merchant_account->{hashsalt},
     _cardcvc         => $cardcvc
 });
 cmp_deeply(
@@ -120,8 +118,7 @@ my $request = {
     _fraudoffset             => $fraudoffset,
     _selectedbrand           => $selectedbrand,
     _browserinfoacceptheader => $browserinfoacceptheader,
-    _browserinfouseragent    => $browserinfouseragent,
-    _hashsalt                => $merchant_account->{hashsalt}
+    _browserinfouseragent    => $browserinfouseragent
 };
 my $authorise_payment_response = $pci->authorise_payment_request($request);
 cmp_deeply(

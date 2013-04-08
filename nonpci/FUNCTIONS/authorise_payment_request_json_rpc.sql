@@ -26,11 +26,10 @@ _ShopperReference text,
 _FraudOffset integer,
 _SelectedBrand text,
 _BrowserInfoAcceptHeader text,
-_BrowserInfoUserAgent text,
-_HashSalt text
+_BrowserInfoUserAgent text
 ) RETURNS RECORD AS $BODY$
 
-my ($PCIBlackBoxURL, $CardKey, $CVCKey, $PSP, $MerchantAccount, $URL, $Username, $Password, $CurrencyCode, $PaymentAmount, $Reference, $ShopperIP, $ShopperEmail, $ShopperReference, $FraudOffset, $SelectedBrand, $BrowserInfoAcceptHeader, $BrowserInfoUserAgent, $HashSalt) = @_;
+my ($PCIBlackBoxURL, $CardKey, $CVCKey, $PSP, $MerchantAccount, $URL, $Username, $Password, $CurrencyCode, $PaymentAmount, $Reference, $ShopperIP, $ShopperEmail, $ShopperReference, $FraudOffset, $SelectedBrand, $BrowserInfoAcceptHeader, $BrowserInfoUserAgent) = @_;
 
 use JSON::RPC::Simple::Client;
 my $c = JSON::RPC::Simple::Client->new($PCIBlackBoxURL);
@@ -41,27 +40,26 @@ if ($PCIBlackBoxURL =~ m!^https://localhost!i) {
 }
 
 my $r = $c->authorise_payment_request({
-    _cardkey                 => $CardKey,
-    _cvckey                  => $CVCKey,
-    _psp                     => $PSP,
-    _merchantaccount         => $MerchantAccount,
-    _url                     => $URL,
-    _username                => $Username,
-    _password                => $Password,
-    _currencycode            => $CurrencyCode,
-    _paymentamount           => $PaymentAmount,
-    _reference               => $Reference,
-    _shopperip               => $ShopperIP,
-    _shopperemail            => $ShopperEmail,
-    _shopperreference        => $ShopperReference,
-    _fraudoffset             => $FraudOffset,
-    _selectedbrand           => $SelectedBrand,
-    _browserinfoacceptheader => $BrowserInfoAcceptHeader,
-    _browserinfouseragent    => $BrowserInfoUserAgent,
-    _hashsalt                => $HashSalt
+    cardkey                 => $CardKey,
+    cvckey                  => $CVCKey,
+    psp                     => $PSP,
+    merchantaccount         => $MerchantAccount,
+    url                     => $URL,
+    username                => $Username,
+    password                => $Password,
+    currencycode            => $CurrencyCode,
+    paymentamount           => $PaymentAmount,
+    reference               => $Reference,
+    shopperip               => $ShopperIP,
+    shopperemail            => $ShopperEmail,
+    shopperreference        => $ShopperReference,
+    fraudoffset             => $FraudOffset,
+    selectedbrand           => $SelectedBrand,
+    browserinfoacceptheader => $BrowserInfoAcceptHeader,
+    browserinfouseragent    => $BrowserInfoUserAgent
 });
 return $r;
 $BODY$ LANGUAGE plperlu VOLATILE SECURITY DEFINER;
 
-REVOKE ALL ON FUNCTION Authorise_Payment_Request_JSON_RPC(_PCIBlackBoxURL text, _CardKey text, _CVCKey text, _PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _CurrencyCode char(3), _PaymentAmount numeric, _Reference text, _ShopperIP inet, _ShopperEmail text, _ShopperReference text, _FraudOffset integer, _SelectedBrand text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text, _HashSalt text) FROM PUBLIC;
-GRANT  ALL ON FUNCTION Authorise_Payment_Request_JSON_RPC(_PCIBlackBoxURL text, _CardKey text, _CVCKey text, _PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _CurrencyCode char(3), _PaymentAmount numeric, _Reference text, _ShopperIP inet, _ShopperEmail text, _ShopperReference text, _FraudOffset integer, _SelectedBrand text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text, _HashSalt text) TO "nonpci";
+REVOKE ALL ON FUNCTION Authorise_Payment_Request_JSON_RPC(_PCIBlackBoxURL text, _CardKey text, _CVCKey text, _PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _CurrencyCode char(3), _PaymentAmount numeric, _Reference text, _ShopperIP inet, _ShopperEmail text, _ShopperReference text, _FraudOffset integer, _SelectedBrand text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text) FROM PUBLIC;
+GRANT  ALL ON FUNCTION Authorise_Payment_Request_JSON_RPC(_PCIBlackBoxURL text, _CardKey text, _CVCKey text, _PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _CurrencyCode char(3), _PaymentAmount numeric, _Reference text, _ShopperIP inet, _ShopperEmail text, _ShopperReference text, _FraudOffset integer, _SelectedBrand text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text) TO "nonpci";

@@ -27,7 +27,6 @@ SET ROLE TO nonpci;
 \i nonpci/TABLES/cards.sql
 \i nonpci/TABLES/authoriserequests.sql
 \i nonpci/FUNCTIONS/get_merchant_account.sql
-\i nonpci/FUNCTIONS/get_hash_salt.sql
 \i nonpci/FUNCTIONS/store_card_key.sql
 \i nonpci/FUNCTIONS/authorise.sql
 
@@ -60,6 +59,7 @@ CREATE EXTENSION "uuid-ossp";
 
 SET ROLE TO pci;
 
+\i pci/TABLES/hashsalts.sql
 \i pci/TABLES/cardnumberreferences.sql
 \i pci/TABLES/encryptedcards.sql
 \i pci/TABLES/encryptedcvcs.sql

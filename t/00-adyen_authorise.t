@@ -12,11 +12,11 @@ use Data::Dumper;
 plan tests => 3;
 
 # Connect to the PCI compliant service
-my $dbh_pci = DBI->connect("dbi:Pg:dbname=pci", '', '', {pg_enable_utf8 => 1, PrintError => 0});
+my $dbh_pci = DBI->connect("dbi:Pg:dbname=pci", 'pci', '', {pg_enable_utf8 => 1, PrintError => 0});
 my $pci = DBIx::Pg::CallFunction->new($dbh_pci);
 
 # Connect to the non-PCI compliant service
-my $dbh = DBI->connect("dbi:Pg:dbname=nonpci", '', '', {pg_enable_utf8 => 1, PrintError => 0});
+my $dbh = DBI->connect("dbi:Pg:dbname=nonpci", 'nonpci', '', {pg_enable_utf8 => 1, PrintError => 0});
 my $nonpci = DBIx::Pg::CallFunction->new($dbh);
 
 my $merchant_account = $nonpci->get_merchant_account();
@@ -27,8 +27,7 @@ cmp_deeply(
         merchantaccount => re('.+'),
         url             => re('^https://'),
         username        => re('.+'),
-        password        => re('.+'),
-        hashsalt        => re('.+')
+        password        => re('.+')
     },
     'Get_Merchant_Account'
 );

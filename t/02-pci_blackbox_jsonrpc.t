@@ -11,13 +11,16 @@ use JSON qw(from_json to_json);
 use DBI;
 use DBIx::Pg::CallFunction;
 
-plan tests => 3;
+plan tests => 2;
 
 my $nonpci = JSON::RPC::Simple::Client->new('https://localhost:30001/nonpci');
 my $pci    = JSON::RPC::Simple::Client->new('https://localhost:30002/pci');
 
+# Disable verification of SSL-cert in test case
 $nonpci->{ua}->ssl_opts(verify_hostname => 0);
 $pci->{ua}->ssl_opts(verify_hostname => 0);
+
+
 
 # Variables used throughout the test
 my $cardnumber              = '5212345678901234';
@@ -33,13 +36,7 @@ my $shopperreference        = rand();
 
 
 
-# Test 1, Get_Hash_Salt (not really necessary, you could also hard-code the HashSalt value in the javascript code to avoid this extra database call)
-my $hashsalt = $nonpci->get_hash_salt();
-like($hashsalt, qr{^\$2a\$08\$[a-zA-Z0-9./]{22}$}, 'Get_Hash_Salt');
-
-
-
-# Test 2, Encrypt_Card
+# Test 1, Encrypt_Card
 my $encrypted_card = $pci->encrypt_card({
     cardnumber      => $cardnumber,
     cardexpirymonth => $cardexpirymonth,
@@ -48,7 +45,6 @@ my $encrypted_card = $pci->encrypt_card({
     cardissuenumber => undef,
     cardstartmonth  => undef,
     cardstartyear   => undef,
-    hashsalt        => $hashsalt,
     cardcvc         => $cardcvc
 });
 cmp_deeply(
@@ -65,7 +61,7 @@ cmp_deeply(
 
 
 
-# Test 3, Authorise
+# Test 2, Authorise
 my $request_authorise = {
     orderid                 => 1234567890,
     currencycode            => $currencycode,
@@ -75,7 +71,6 @@ my $request_authorise = {
     cardbin                 => $encrypted_card->{cardbin},
     cardlast4               => $encrypted_card->{cardlast4},
     cvckey                  => $encrypted_card->{cvckey},
-    hashsalt                => $hashsalt,
     # these are overwritten by pci-blackbox.psgi:
     remote_addr             => undef,
     http_user_agent         => undef,

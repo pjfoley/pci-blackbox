@@ -11,7 +11,6 @@ _CardHolderName text,
 _CardIssueNumber integer,
 _CardStartMonth integer,
 _CardStartYear integer,
-_HashSalt text,
 _CardCVC text
 ) RETURNS RECORD AS $BODY$
 DECLARE
@@ -20,6 +19,8 @@ _CardJSON text;
 _CardData bytea;
 _OK boolean;
 _CardKeyHash bytea;
+_HashSalt text;
+_HashSaltID integer := 1;
 BEGIN
 
 IF _CardNumber IS NULL OR _CardNumber !~ '^[0-9]{13,16}$' OR _CardExpiryMonth IS NULL OR _CardExpiryYear IS NULL OR _CardHolderName IS NULL THEN
@@ -28,6 +29,11 @@ END IF;
 
 CardBIN := substr(_CardNumber,1,6);
 CardLast4 := substr(_CardNumber,length(_CardNumber)-3,4);
+
+SELECT HashSalt INTO _HashSalt FROM HashSalts WHERE HashSaltID = _HashSaltID;
+IF NOT FOUND THEN
+    INSERT INTO HashSalts (HashSaltID) VALUES (_HashSaltID) RETURNING HashSalt INTO STRICT _HashSalt;
+END IF;
 
 _CardNumberHash := crypt(_CardNumber, _HashSalt);
 SELECT CardNumberReferences.CardNumberReference INTO Encrypt_Card.CardNumberReference FROM CardNumberReferences WHERE CardNumberReferences.CardNumberHash = _CardNumberHash;
@@ -58,5 +64,5 @@ RETURN;
 END;
 $BODY$ LANGUAGE plpgsql VOLATILE SECURITY DEFINER;
 
-REVOKE ALL ON FUNCTION Encrypt_Card(_CardNumber text, _CardExpiryMonth integer, _CardExpiryYear integer, _CardHolderName text, _CardIssueNumber integer, _CardStartMonth integer, _CardStartYear integer, _HashSalt text, _CardCVC text) FROM PUBLIC;
-GRANT  ALL ON FUNCTION Encrypt_Card(_CardNumber text, _CardExpiryMonth integer, _CardExpiryYear integer, _CardHolderName text, _CardIssueNumber integer, _CardStartMonth integer, _CardStartYear integer, _HashSalt text, _CardCVC text) TO "pci";
+REVOKE ALL ON FUNCTION Encrypt_Card(_CardNumber text, _CardExpiryMonth integer, _CardExpiryYear integer, _CardHolderName text, _CardIssueNumber integer, _CardStartMonth integer, _CardStartYear integer, _CardCVC text) FROM PUBLIC;
+GRANT  ALL ON FUNCTION Encrypt_Card(_CardNumber text, _CardExpiryMonth integer, _CardExpiryYear integer, _CardHolderName text, _CardIssueNumber integer, _CardStartMonth integer, _CardStartYear integer, _CardCVC text) TO "pci";

@@ -10,8 +10,7 @@ _CardLast4 char(4),
 _CVCKey text,
 _Remote_Addr inet,
 _HTTP_User_Agent text,
-_HTTP_Accept text,
-_HashSalt text
+_HTTP_Accept text
 ) RETURNS UUID AS $BODY$
 DECLARE
 _ record;
@@ -99,8 +98,7 @@ FROM Authorise_Payment_Request_JSON_RPC(
     _FraudOffset,
     _SelectedBrand,
     _HTTP_Accept,
-    _HTTP_User_Agent,
-    _HashSalt
+    _HTTP_User_Agent
 );
 
 INSERT INTO AuthoriseRequests (OrderID, CurrencyCode, PaymentAmount, MerchantAccountID, CardID, AuthCode, DCCAmount, DCCSignature, FraudResult, IssuerURL, MD, PARequest, PSPReference, RefusalReason, ResultCode)
@@ -112,5 +110,5 @@ RETURN;
 END;
 $BODY$ LANGUAGE plpgsql VOLATILE SECURITY DEFINER;
 
-REVOKE ALL ON FUNCTION Authorise(_OrderID bigint, _CurrencyCode char(3), _PaymentAmount numeric, _CardNumberReference uuid, _CardKey text, _CardBIN char(6), _CardLast4 char(4), _CVCKey text, _Remote_Addr inet, _HTTP_User_Agent text, _HTTP_Accept text, _HashSalt text) FROM PUBLIC;
-GRANT  ALL ON FUNCTION Authorise(_OrderID bigint, _CurrencyCode char(3), _PaymentAmount numeric, _CardNumberReference uuid, _CardKey text, _CardBIN char(6), _CardLast4 char(4), _CVCKey text, _Remote_Addr inet, _HTTP_User_Agent text, _HTTP_Accept text, _HashSalt text) TO "nonpci";
+REVOKE ALL ON FUNCTION Authorise(_OrderID bigint, _CurrencyCode char(3), _PaymentAmount numeric, _CardNumberReference uuid, _CardKey text, _CardBIN char(6), _CardLast4 char(4), _CVCKey text, _Remote_Addr inet, _HTTP_User_Agent text, _HTTP_Accept text) FROM PUBLIC;
+GRANT  ALL ON FUNCTION Authorise(_OrderID bigint, _CurrencyCode char(3), _PaymentAmount numeric, _CardNumberReference uuid, _CardKey text, _CardBIN char(6), _CardLast4 char(4), _CVCKey text, _Remote_Addr inet, _HTTP_User_Agent text, _HTTP_Accept text) TO "nonpci";
