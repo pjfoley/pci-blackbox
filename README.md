@@ -7,6 +7,8 @@ PCI-DSS compliant card system built on PostgreSQL and PL/pgSQL
 Assumes clean OS. Skip packages you already have.
 
 ### 1. Install necessary packages
+    sudo apt-get update
+    sudo apt-get upgrade
     sudo apt-get install cpanminus build-essential postgresql-9.1 \
     postgresql-contrib-9.1 postgresql-plperl-9.1 libplack-perl libdbd-pg-perl \
     libjson-perl libmodule-install-perl libtest-exception-perl \
