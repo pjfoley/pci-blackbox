@@ -11,7 +11,7 @@ Assumes clean OS. Skip packages you already have.
     postgresql-contrib-9.1 postgresql-plperl-9.1 libplack-perl libdbd-pg-perl \
     libjson-perl libmodule-install-perl libtest-exception-perl \
     libapache2-mod-perl2 apache2-mpm-prefork git-core libtest-deep-perl \
-    libfile-slurp-perl libwww-curl-perl git
+    libfile-slurp-perl libwww-curl-perl git libdbix-connector-perl
 
 ### 2. Create a database and database user for our shell user
     sudo -u postgres createuser --no-superuser --no-createrole --createdb $USER
