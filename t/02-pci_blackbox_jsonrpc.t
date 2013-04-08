@@ -74,11 +74,11 @@ my $request_authorise = {
     _cardbin                 => $encrypted_card->{cardbin},
     _cardlast4               => $encrypted_card->{cardlast4},
     _cvckey                  => $encrypted_card->{cvckey},
+    _hashsalt                => $hashsalt,
     # these are overwritten by pci-blackbox.psgi:
     _remote_addr             => undef,
     _http_user_agent         => undef,
-    _http_accept             => undef,
-    _hashsalt                => $hashsalt
+    _http_accept             => undef
 };
 my $authorise_request_id = $nonpci->authorise($request_authorise);
 like($authorise_request_id, qr/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/, 'Authorise');
