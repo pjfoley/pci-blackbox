@@ -68,8 +68,8 @@ my $app = sub {
     my ($namespace, $function_name) = ($1, $2);
 
     foreach my $k ('REMOTE_ADDR','HTTP_USER_AGENT','HTTP_ACCEPT') {
-        if (exists $params->{lc("_$k")}) {
-            $params->{lc("_$k")} = $env->{$k};
+        if (exists $params->{lc($k)}) {
+            $params->{lc($k)} = $env->{$k};
         }
     }
 
@@ -81,7 +81,11 @@ my $app = sub {
     my $service = $env->{'psgi.input'}->dir_config('pg_service_name');
     my $dbh = DBI->connect("dbi:Pg:service=$service", '', '', {pg_enable_utf8 => 1}) or die "unable to connect to PostgreSQL";
     my $pg = DBIx::Pg::CallFunction->new($dbh);
-    my $result = $pg->$function_name($params, $namespace);
+    my $prefixed_params = {};
+    foreach my $k (keys %{$params}) {
+        $prefixed_params->{"_$k"} = $params->{$k};
+    }
+    my $result = $pg->$function_name($prefixed_params, $namespace);
     $dbh->disconnect;
 
     my $response = {
