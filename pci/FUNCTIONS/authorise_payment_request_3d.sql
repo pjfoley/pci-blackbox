@@ -55,4 +55,4 @@ END;
 $BODY$ LANGUAGE plpgsql VOLATILE SECURITY DEFINER;
 
 REVOKE ALL ON FUNCTION Authorise_Payment_Request_3D(_PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text, _IssuerMD text, _IssuerPAResponse text, _ShopperIP inet) FROM PUBLIC;
-GRANT  ALL ON FUNCTION Authorise_Payment_Request_3D(_PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text, _IssuerMD text, _IssuerPAResponse text, _ShopperIP inet) TO "pci";
+GRANT  ALL ON FUNCTION Authorise_Payment_Request_3D(_PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text, _IssuerMD text, _IssuerPAResponse text, _ShopperIP inet) TO GROUP pci;

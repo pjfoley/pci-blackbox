@@ -65,4 +65,4 @@ END;
 $BODY$ LANGUAGE plpgsql VOLATILE SECURITY DEFINER;
 
 REVOKE ALL ON FUNCTION Encrypt_Card(_CardNumber text, _CardExpiryMonth integer, _CardExpiryYear integer, _CardHolderName text, _CardIssueNumber integer, _CardStartMonth integer, _CardStartYear integer, _CardCVC text) FROM PUBLIC;
-GRANT  ALL ON FUNCTION Encrypt_Card(_CardNumber text, _CardExpiryMonth integer, _CardExpiryYear integer, _CardHolderName text, _CardIssueNumber integer, _CardStartMonth integer, _CardStartYear integer, _CardCVC text) TO "pci";
+GRANT  ALL ON FUNCTION Encrypt_Card(_CardNumber text, _CardExpiryMonth integer, _CardExpiryYear integer, _CardHolderName text, _CardIssueNumber integer, _CardStartMonth integer, _CardStartYear integer, _CardCVC text) TO GROUP pci;

@@ -27,4 +27,4 @@ END;
 $BODY$ LANGUAGE plpgsql STABLE SECURITY DEFINER;
 
 REVOKE ALL ON FUNCTION Get_Merchant_Account() FROM PUBLIC;
-GRANT  ALL ON FUNCTION Get_Merchant_Account() TO "nonpci";
+GRANT  ALL ON FUNCTION Get_Merchant_Account() TO GROUP nonpci;
