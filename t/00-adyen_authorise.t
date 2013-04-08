@@ -8,6 +8,7 @@ use DBIx::Pg::CallFunction;
 use Test::More;
 use Test::Deep;
 use Data::Dumper;
+
 plan tests => 3;
 
 # Connect to the PCI compliant service

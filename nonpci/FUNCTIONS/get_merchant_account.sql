@@ -15,7 +15,7 @@ SELECT
     MerchantAccounts.Username,
     MerchantAccounts.Password,
     MerchantAccounts.HashSalt
-INTO
+INTO STRICT
     Get_Merchant_Account.PSP,
     Get_Merchant_Account.MerchantAccount,
     Get_Merchant_Account.URL,
@@ -30,4 +30,4 @@ END;
 $BODY$ LANGUAGE plpgsql STABLE SECURITY DEFINER;
 
 REVOKE ALL ON FUNCTION Get_Merchant_Account() FROM PUBLIC;
-GRANT  ALL ON FUNCTION Get_Merchant_Account() TO "www-data";
+GRANT  ALL ON FUNCTION Get_Merchant_Account() TO "nonpci";

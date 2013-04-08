@@ -1,4 +1,5 @@
 -- This script must be invoked as a superuser
+CREATE USER "www-data" WITH NOSUPERUSER NOCREATEDB;
 CREATE USER nonpci WITH NOSUPERUSER NOCREATEDB;
 CREATE USER pci WITH NOSUPERUSER NOCREATEDB;
 
@@ -11,7 +12,12 @@ CREATE DATABASE pci WITH OWNER = pci;
 
 BEGIN;
 
+CREATE LANGUAGE plperlu;
 CREATE EXTENSION pgcrypto;
+CREATE EXTENSION "uuid-ossp";
+
+-- plperlu functions, can only be created by superusers
+\i nonpci/functions/authorise_payment_request_json_rpc.sql
 
 SET ROLE TO nonpci;
 
@@ -19,8 +25,11 @@ SET ROLE TO nonpci;
 \i nonpci/SEQUENCES/seqcards.sql
 \i nonpci/TABLES/merchantaccounts.sql
 \i nonpci/TABLES/cards.sql
+\i nonpci/TABLES/authoriserequests.sql
 \i nonpci/FUNCTIONS/get_merchant_account.sql
+\i nonpci/FUNCTIONS/get_hash_salt.sql
 \i nonpci/FUNCTIONS/store_card_key.sql
+\i nonpci/FUNCTIONS/authorise.sql
 
 -- This file needs to be created manually:
 \i nonpci/populate.sql
@@ -56,7 +65,6 @@ SET ROLE TO pci;
 \i pci/TABLES/encryptedcvcs.sql
 \i pci/FUNCTIONS/encrypt_card.sql
 \i pci/FUNCTIONS/encrypt_cvc.sql
-\i pci/FUNCTIONS/encrypt_card_cvc.sql
 \i pci/FUNCTIONS/authorise_payment_request.sql
 \i pci/FUNCTIONS/authorise_payment_request_3d.sql
 \i pci/FUNCTIONS/decrypt_card.sql

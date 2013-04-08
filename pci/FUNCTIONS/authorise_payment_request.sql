@@ -25,7 +25,8 @@ _ShopperReference text,
 _FraudOffset integer,
 _SelectedBrand text,
 _BrowserInfoAcceptHeader text,
-_BrowserInfoUserAgent text
+_BrowserInfoUserAgent text,
+_HashSalt text
 ) RETURNS RECORD AS $BODY$
 DECLARE
 _CardNumber text;
@@ -48,7 +49,7 @@ SELECT * INTO STRICT
     _CardIssueNumber,
     _CardStartMonth,
     _CardStartYear
-FROM Decrypt_Card(_CardKey);
+FROM Decrypt_Card(_CardKey,_HashSalt);
 
 _CardCVC := Decrypt_CVC(_CVCKey);
 
@@ -107,5 +108,5 @@ RETURN;
 END;
 $BODY$ LANGUAGE plpgsql VOLATILE SECURITY DEFINER;
 
-REVOKE ALL ON FUNCTION Authorise_Payment_Request(_CardKey text, _CVCKey text, _PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _CurrencyCode char(3), _PaymentAmount numeric, _Reference text, _ShopperIP inet, _ShopperEmail text, _ShopperReference text, _FraudOffset integer, _SelectedBrand text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text) FROM PUBLIC;
-GRANT  ALL ON FUNCTION Authorise_Payment_Request(_CardKey text, _CVCKey text, _PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _CurrencyCode char(3), _PaymentAmount numeric, _Reference text, _ShopperIP inet, _ShopperEmail text, _ShopperReference text, _FraudOffset integer, _SelectedBrand text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text) TO "www-data";
+REVOKE ALL ON FUNCTION Authorise_Payment_Request(_CardKey text, _CVCKey text, _PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _CurrencyCode char(3), _PaymentAmount numeric, _Reference text, _ShopperIP inet, _ShopperEmail text, _ShopperReference text, _FraudOffset integer, _SelectedBrand text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text, _HashSalt text) FROM PUBLIC;
+GRANT  ALL ON FUNCTION Authorise_Payment_Request(_CardKey text, _CVCKey text, _PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _CurrencyCode char(3), _PaymentAmount numeric, _Reference text, _ShopperIP inet, _ShopperEmail text, _ShopperReference text, _FraudOffset integer, _SelectedBrand text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text, _HashSalt text) TO "pci";

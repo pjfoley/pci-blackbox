@@ -13,13 +13,9 @@ use File::Slurp qw(write_file);
 
 plan tests => 8;
 
-
-
 # Connect to the isolated PCI compliant pci-blackbox
 my $dbh_pci = DBI->connect("dbi:Pg:dbname=pci", '', '', {pg_enable_utf8 => 1, PrintError => 0});
 my $pci = DBIx::Pg::CallFunction->new($dbh_pci);
-
-
 
 # Connect to the normal database
 my $dbh = DBI->connect("dbi:Pg:dbname=nonpci", '', '', {pg_enable_utf8 => 1, PrintError => 0});
@@ -69,8 +65,8 @@ cmp_deeply(
 
 
 
-# Test 2, Encrypt_Card_CVC
-my $encrypted_card = $pci->encrypt_card_cvc({
+# Test 2, Encrypt_Card
+my $encrypted_card = $pci->encrypt_card({
     _cardnumber      => $cardnumber,
     _cardexpirymonth => $cardexpirymonth,
     _cardexpiryyear  => $cardexpiryyear,
@@ -90,7 +86,7 @@ cmp_deeply(
         cardlast4           => re('^[0-9]{4}$'),
         cvckey              => re('^[0-9a-f]{512}$')
     },
-    'Encrypt_Card_CVC'
+    'Encrypt_Card'
 );
 
 
@@ -124,7 +120,8 @@ my $request = {
     _fraudoffset             => $fraudoffset,
     _selectedbrand           => $selectedbrand,
     _browserinfoacceptheader => $browserinfoacceptheader,
-    _browserinfouseragent    => $browserinfouseragent
+    _browserinfouseragent    => $browserinfouseragent,
+    _hashsalt                => $merchant_account->{hashsalt}
 };
 my $authorise_payment_response = $pci->authorise_payment_request($request);
 cmp_deeply(
@@ -205,5 +202,5 @@ cmp_deeply(
 
 
 
-$dbh->rollback;
-$dbh_pci->rollback;
+$dbh->commit;
+$dbh_pci->commit;

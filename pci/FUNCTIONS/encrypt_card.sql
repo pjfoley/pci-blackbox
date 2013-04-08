@@ -3,6 +3,7 @@ OUT CardNumberReference uuid,
 OUT CardKey text,
 OUT CardBIN char(6),
 OUT CardLast4 char(4),
+OUT CVCKey text,
 _CardNumber text,
 _CardExpiryMonth integer,
 _CardExpiryYear integer,
@@ -10,7 +11,8 @@ _CardHolderName text,
 _CardIssueNumber integer,
 _CardStartMonth integer,
 _CardStartYear integer,
-_HashSalt text
+_HashSalt text,
+_CardCVC text
 ) RETURNS RECORD AS $BODY$
 DECLARE
 _CardNumberHash text;
@@ -48,9 +50,13 @@ _CardData := pgp_sym_encrypt(_CardJSON,CardKey,'cipher-algo=aes256');
 
 INSERT INTO EncryptedCards (CardKeyHash,CardNumberReference,CardData) VALUES (_CardKeyHash, CardNumberReference, _CardData) RETURNING TRUE INTO STRICT _OK;
 
+IF _CardCVC IS NOT NULL THEN
+    SELECT Encrypt_CVC.CVCKey INTO STRICT Encrypt_Card.CVCKey FROM Encrypt_CVC(_CardCVC);
+END IF;
+
 RETURN;
 END;
 $BODY$ LANGUAGE plpgsql VOLATILE SECURITY DEFINER;
 
-REVOKE ALL ON FUNCTION Encrypt_Card(_CardNumber text, _CardExpiryMonth integer, _CardExpiryYear integer, _CardHolderName text, _CardIssueNumber integer, _CardStartMonth integer, _CardStartYear integer, _HashSalt text) FROM PUBLIC;
-GRANT  ALL ON FUNCTION Encrypt_Card(_CardNumber text, _CardExpiryMonth integer, _CardExpiryYear integer, _CardHolderName text, _CardIssueNumber integer, _CardStartMonth integer, _CardStartYear integer, _HashSalt text) TO "www-data";
+REVOKE ALL ON FUNCTION Encrypt_Card(_CardNumber text, _CardExpiryMonth integer, _CardExpiryYear integer, _CardHolderName text, _CardIssueNumber integer, _CardStartMonth integer, _CardStartYear integer, _HashSalt text, _CardCVC text) FROM PUBLIC;
+GRANT  ALL ON FUNCTION Encrypt_Card(_CardNumber text, _CardExpiryMonth integer, _CardExpiryYear integer, _CardHolderName text, _CardIssueNumber integer, _CardStartMonth integer, _CardStartYear integer, _HashSalt text, _CardCVC text) TO "pci";
