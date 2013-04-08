@@ -1,6 +1,6 @@
 CREATE TABLE AuthoriseRequests (
 AuthoriseRequestID uuid not null default uuid_generate_v4(),
-OrderID bigint not null,
+OrderID text,
 CurrencyCode char(3),
 PaymentAmount numeric,
 MerchantAccountID integer not null,
