@@ -35,14 +35,7 @@ Assumes clean OS. Skip packages you already have.
     ./install.sh
 
 ### 7. Configure pg_service.conf
-    sudo cp -n /usr/share/postgresql/9.1/pg_service.conf.sample \
-    /etc/postgresql-common/pg_service.conf
-
-    echo "
-    [pg_proc_jsonrpc]
-    application_name=pg_proc_jsonrpc
-    dbname=pci
-    " | sudo sh -c 'cat - >> /etc/postgresql-common/pg_service.conf'
+    sudo sh -c 'cat pg_service.conf >> /etc/postgresql-common/pg_service.conf'
 
 ### 8. Configure Apache
 
