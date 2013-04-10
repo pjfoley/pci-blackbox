@@ -1,108 +1,108 @@
 <!doctype html>
 <html>
-	<head>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		<script>
-			$(function(){
-			
-				$('#pciblackbox').on('submit', function(event){
-					alert(1);
-					event.preventDefault();
-					// Change these IPs to the hostnames of your servers:
-					var pci_api = 'https://192.168.35.131:30002/pci/';
-					var nonpci_api = 'https://192.168.35.131:30001/nonpci/';
-					var form = $(this);
-					var data = {
-						cardnumber: null,
-						cardexpirymonth: null,
-						cardexpiryyear: null,
-						cardholdername: null,
-						cardissuenumber: null,
-						cardstartmonth: null,
-						cardstartyear: null,
-						cardcvc: null
-					};
-					form.find('input').each(function(){
-						if ($(this).data('pciblackbox')) data[$(this).data('pciblackbox')] = $(this).val();
-					});
-					//Encrypt sensitive card data			
-					$.ajax(pci_api + 'encrypt_card', {
-							dataType: 'jsonp',
-							data: data,
-							success: function(encrypted) {
-								console.dir(encrypted);
-								encrypted.paymentamount = form.find('input[name=paymentamount]').val();
-								encrypted.currencycode = form.find('input[name=currencycode]').val();
-								encrypted.orderid = form.find('input[name=orderid]').val();
-								//Authorize the transaction using encrypted card data
-								$.ajax(nonpci_api, {
-									type: 'POST',
-									dataType: 'json',
-									data: JSON.stringify({
-										method: 'authorise',
-										params: encrypted,
-										version: '1.1'
-									}),
-									contentType: 'application/json',
-									headers: {
-										'cache-control' : 'no-cache'
-									},
-									success: function(result) {
-										console.dir(result);
-									}
-								});
-							}
-					});
-				});
-			
-			});
-		</script>
-		<style>
-			body { background-color: #F5F5F5; font: 14px sans-serif; }
-			form { border: 1px solid #CCC; padding: 10px; margin: 30px auto 0; width: 300px; background-color: #FFFFFF; }
-			label { display: block; margin-bottom: 10px; }
-			label div { width: 100px; padding-right: 10px; float: left; text-align: right; }
-			input[data-pciblackbox=cardnumber] { width: 150px; }
-			input[data-pciblackbox=cardholdername] { width: 150px; }
-			input[data-pciblackbox=cardexpirymonth] { width: 30px; }
-			input[data-pciblackbox=cardexpiryyear] { width: 30px; }
-			input[data-pciblackbox=cardcvc] { width: 30px; }
-		</style>
-	</head>
-	<body>
-		<form id="pciblackbox">
-			<label>
-				<div>Card number:</div>
-				<input type="text" data-pciblackbox="cardnumber" value="5212345678901234">
-			</label>
-			<label>
-				<div>Name on card:</div>
-				<input type="text" data-pciblackbox="cardholdername" value="Test Person">
-			</label>
-			<label>
-				<div>Expire month:</div>
-				<input type="text" data-pciblackbox="cardexpirymonth" value="06">
-			</label>
-			<label>
-				<div>Expire year:</div>
-				<input type="text" data-pciblackbox="cardexpiryyear" value="2016">
-			</label>
-			<label>
-				<div>CVC:</div>
-				<input type="text" data-pciblackbox="cardcvc" value="737">
-			</label>
-			<label>
-				<div>Amount:</div>
-				<input type="text" name="paymentamount">
-			</label>
-			<label>
-				<div>Currency:</div>
-				<input type="text" name="currencycode" value="EUR">
-			</label>
-			<input type="hidden" name="orderid" value="your_id_for_this_order_if_you_have_one">
-			<div>
-				<button>Charge</button>
-			</div>
-		</form>
-	</body>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script>
+            $(function(){
+            
+                $('#pciblackbox').on('submit', function(event){
+                    alert(1);
+                    event.preventDefault();
+                    // Change these IPs to the hostnames of your servers:
+                    var pci_api = 'https://localhost:30002/pci/';
+                    var nonpci_api = 'https://localhost:30001/nonpci/';
+                    var form = $(this);
+                    var data = {
+                        cardnumber: null,
+                        cardexpirymonth: null,
+                        cardexpiryyear: null,
+                        cardholdername: null,
+                        cardissuenumber: null,
+                        cardstartmonth: null,
+                        cardstartyear: null,
+                        cardcvc: null
+                    };
+                    form.find('input').each(function(){
+                        if ($(this).data('pciblackbox')) data[$(this).data('pciblackbox')] = $(this).val();
+                    });
+                    //Encrypt sensitive card data            
+                    $.ajax(pci_api + 'encrypt_card', {
+                            dataType: 'jsonp',
+                            data: data,
+                            success: function(encrypted) {
+                                console.dir(encrypted);
+                                encrypted.paymentamount = form.find('input[name=paymentamount]').val();
+                                encrypted.currencycode = form.find('input[name=currencycode]').val();
+                                encrypted.orderid = form.find('input[name=orderid]').val();
+                                //Authorize the transaction using encrypted card data
+                                $.ajax(nonpci_api, {
+                                    type: 'POST',
+                                    dataType: 'json',
+                                    data: JSON.stringify({
+                                        method: 'authorise',
+                                        params: encrypted,
+                                        version: '1.1'
+                                    }),
+                                    contentType: 'application/json',
+                                    headers: {
+                                        'cache-control' : 'no-cache'
+                                    },
+                                    success: function(result) {
+                                        console.dir(result);
+                                    }
+                                });
+                            }
+                    });
+                });
+            
+            });
+        </script>
+        <style>
+            body { background-color: #F5F5F5; font: 14px sans-serif; }
+            form { border: 1px solid #CCC; padding: 10px; margin: 30px auto 0; width: 300px; background-color: #FFFFFF; }
+            label { display: block; margin-bottom: 10px; }
+            label div { width: 100px; padding-right: 10px; float: left; text-align: right; }
+            input[data-pciblackbox=cardnumber] { width: 150px; }
+            input[data-pciblackbox=cardholdername] { width: 150px; }
+            input[data-pciblackbox=cardexpirymonth] { width: 30px; }
+            input[data-pciblackbox=cardexpiryyear] { width: 30px; }
+            input[data-pciblackbox=cardcvc] { width: 30px; }
+        </style>
+    </head>
+    <body>
+        <form id="pciblackbox">
+            <label>
+                <div>Card number:</div>
+                <input type="text" data-pciblackbox="cardnumber" value="5212345678901234">
+            </label>
+            <label>
+                <div>Name on card:</div>
+                <input type="text" data-pciblackbox="cardholdername" value="Test Person">
+            </label>
+            <label>
+                <div>Expire month:</div>
+                <input type="text" data-pciblackbox="cardexpirymonth" value="06">
+            </label>
+            <label>
+                <div>Expire year:</div>
+                <input type="text" data-pciblackbox="cardexpiryyear" value="2016">
+            </label>
+            <label>
+                <div>CVC:</div>
+                <input type="text" data-pciblackbox="cardcvc" value="737">
+            </label>
+            <label>
+                <div>Amount:</div>
+                <input type="text" name="paymentamount">
+            </label>
+            <label>
+                <div>Currency:</div>
+                <input type="text" name="currencycode" value="EUR">
+            </label>
+            <input type="hidden" name="orderid" value="your_id_for_this_order_if_you_have_one">
+            <div>
+                <button>Charge</button>
+            </div>
+        </form>
+    </body>
 </html>
