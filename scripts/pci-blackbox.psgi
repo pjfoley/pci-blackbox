@@ -60,7 +60,7 @@ my $app = sub {
         my $req = Plack::Request->new($env);
         $method = $req->path_info;
         $method =~ s{^.*/}{};
-        $params = $req->body_parameters->mixed;
+        $params = $req->parameters->mixed;
         foreach my $k (keys %{$params}) {
             $params->{$k} = undef if $params->{$k} eq '';
         }
@@ -94,7 +94,7 @@ my $app = sub {
         }
     }
 
-    my $service = $env->{'psgi.input'}->dir_config('pg_service_name');
+    my $service = $ENV{pg_service_name};
     my $dbh = DBI->connect("dbi:Pg:service=$service", '', '', {pg_enable_utf8 => 1}) or die "unable to connect to PostgreSQL";
     my $pg = DBIx::Pg::CallFunction->new($dbh);
     my $prefixed_params = {};
