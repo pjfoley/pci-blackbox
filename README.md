@@ -21,12 +21,12 @@ Assumes clean OS. Skip packages you already have.
 ### 3. Aquire test account from any of the supported PSPs, currently only Adyen.
 
 ### 4. Insert the merchant account test credentials into the file nonpci/populate.sql
+	git clone git://github.com/joelonsql/pci-blackbox.git
 	# echo "INSERT INTO MerchantAccounts (PSP, MerchantAccount, URL, Username, Password, PCIBlackBoxURL) \
 	# VALUES ('Adyen', 'TrustlyCOM', 'https://pal-test.adyen.com/pal/servlet/soap/Payment', 'ws@Company.YourCompany', 'yourpassword', 'https://localhost:30002/pci');"\
-	# > nonpci/populate.sql
+	# > ./pci-blackbox/nonpci/populate.sql
 
 ### 5. Install pci-blackbox
-    git clone git://github.com/joelonsql/pci-blackbox.git
     cd pci-blackbox
     sudo -u postgres psql -f install.sql
     sudo sh -c 'cat pg_service.conf >> /etc/postgresql-common/pg_service.conf'
