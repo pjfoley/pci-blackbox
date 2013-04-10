@@ -199,5 +199,5 @@ cmp_deeply(
 
 
 
-$dbh->commit;
-$dbh_pci->commit;
+$dbh->rollback;
+$dbh_pci->rollback;
