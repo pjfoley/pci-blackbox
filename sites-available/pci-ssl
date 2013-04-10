@@ -10,7 +10,7 @@
     <Location /pci>
         SetHandler perl-script
         PerlResponseHandler Plack::Handler::Apache2
-        PerlSetVar pg_service_name pci
+        PerlSetEnv pg_service_name pci
         PerlSetVar psgi_app /usr/local/bin/pci-blackbox.psgi
     </Location>
 </VirtualHost>
