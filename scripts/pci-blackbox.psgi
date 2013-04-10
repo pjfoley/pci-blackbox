@@ -30,19 +30,11 @@ my $app = sub {
 
     my ($method, $params, $id, $version, $jsonrpc);
 
-    if (
-        $env->{REQUEST_METHOD} eq 'GET'
-        ||
-        (
-            $env->{REQUEST_METHOD} eq 'POST' &&
-            $env->{HTTP_ACCEPT} =~ m'text/html' &&
-            $env->{CONTENT_TYPE} =~ m!^application/x-www-form-urlencoded!
-        )
-    ) {
+    if ($env->{REQUEST_METHOD} eq 'GET') {
         my $req = Plack::Request->new($env);
         $method = $req->path_info;
         $method =~ s{^.*/}{};
-        $params = $req->query_parameters->mixed;
+        $params = $req->parameters->mixed;
         foreach my $k (keys %{$params}) {
             $params->{$k} = undef if $params->{$k} eq '';
         }
@@ -60,6 +52,18 @@ my $app = sub {
         $id      = $json_rpc_request->{id};
         $version = $json_rpc_request->{version};
         $jsonrpc = $json_rpc_request->{jsonrpc};
+    } elsif (
+        $env->{REQUEST_METHOD} eq 'POST' &&
+        $env->{HTTP_ACCEPT} =~ m'text/html' &&
+        $env->{CONTENT_TYPE} =~ m!^application/x-www-form-urlencoded!
+    ) {
+        my $req = Plack::Request->new($env);
+        $method = $req->path_info;
+        $method =~ s{^.*/}{};
+        $params = $req->body_parameters->mixed;
+        foreach my $k (keys %{$params}) {
+            $params->{$k} = undef if $params->{$k} eq '';
+        }
     } else {
         return $invalid_request;
     }
