@@ -8,7 +8,9 @@
 				$('#pciblackbox').on('submit', function(event){
 					alert(1);
 					event.preventDefault();
-					var api = 'https://10.0.1.175:30002/pci/';
+					// Change these IPs to the hostnames of your servers:
+					var pci_api = 'https://192.168.35.131:30002/pci/';
+					var nonpci_api = 'https://192.168.35.131:30001/nonpci/';
 					var form = $(this);
 					var data = {
 						cardnumber: null,
@@ -18,14 +20,13 @@
 						cardissuenumber: null,
 						cardstartmonth: null,
 						cardstartyear: null,
-						hashsalt: null,
 						cardcvc: null
 					};
 					form.find('input').each(function(){
 						if ($(this).data('pciblackbox')) data[$(this).data('pciblackbox')] = $(this).val();
 					});
 					//Encrypt sensitive card data			
-					$.ajax(api + 'encrypt_card', {
+					$.ajax(pci_api + 'encrypt_card', {
 							dataType: 'jsonp',
 							data: data,
 							success: function(encrypted) {
@@ -34,7 +35,7 @@
 								encrypted.currencycode = form.find('input[name=currencycode]').val();
 								encrypted.orderid = form.find('input[name=orderid]').val();
 								//Authorize the transaction using encrypted card data
-								$.ajax(api + 'authorise', {
+								$.ajax(nonpci_api + 'authorise', {
 									type: 'POST',
 									dataType: 'json',
 									data: encrypted,
