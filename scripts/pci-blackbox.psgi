@@ -30,7 +30,15 @@ my $app = sub {
 
     my ($method, $params, $id, $version, $jsonrpc);
 
-    if ($env->{REQUEST_METHOD} eq 'GET') {
+    if (
+        $env->{REQUEST_METHOD} eq 'GET'
+        ||
+        (
+            $env->{REQUEST_METHOD} eq 'POST' &&
+            $env->{HTTP_ACCEPT} =~ m'text/html' &&
+            $env->{CONTENT_TYPE} =~ m!^application/x-www-form-urlencoded!
+        )
+    ) {
         my $req = Plack::Request->new($env);
         $method = $req->path_info;
         $method =~ s{^.*/}{};
@@ -38,7 +46,8 @@ my $app = sub {
         foreach my $k (keys %{$params}) {
             $params->{$k} = undef if $params->{$k} eq '';
         }
-    } elsif ($env->{REQUEST_METHOD} eq 'POST' &&
+    } elsif (
+        $env->{REQUEST_METHOD} eq 'POST' &&
         $env->{HTTP_ACCEPT} =~ m'application/json' &&
         $env->{CONTENT_TYPE} =~ m!^application/json!
     ) {
