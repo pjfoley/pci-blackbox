@@ -15,45 +15,26 @@ Assumes clean OS. Skip packages you already have.
     libapache2-mod-perl2 apache2-mpm-prefork git-core libtest-deep-perl \
     libfile-slurp-perl libwww-curl-perl git libdbix-connector-perl
 
-### 2. Create a database and database user for our shell user
-    sudo -u postgres createuser --no-superuser --no-createrole --createdb $USER
-    sudo -u postgres createdb --owner=$USER $USER
-
-### 3. Try to connect
-    psql -c "SELECT 'Hello world'"
-
-### 4. Create database user for apache
-    sudo -u postgres createuser --no-superuser --no-createrole --no-createdb www-data
-
-### 5. Download and build Perl modules not in the Ubuntu repo
+### 2. Download and build Perl modules not in the Ubuntu repo
     cpanm --sudo DBIx::Pg::CallFunction JSON::RPC::Simple::Client
 
-### 6. Install pci-blackbox
+### 3. Aquire test account from any of the supported PSPs, currently only Adyen.
+
+### 4. Insert the merchant account test credentials into the file nonpci/populate.sql
+	# echo "INSERT INTO MerchantAccounts (PSP, MerchantAccount, URL, Username, Password, PCIBlackBoxURL) \
+	# VALUES ('Adyen', 'TrustlyCOM', 'https://pal-test.adyen.com/pal/servlet/soap/Payment', 'ws@Company.YourCompany', 'yourpassword', 'https://localhost:30002/pci');"\
+	# > nonpci/populate.sql
+
+### 5. Install pci-blackbox
     git clone git://github.com/joelonsql/pci-blackbox.git
     cd pci-blackbox
-    # echo "INSERT INTO MerchantAccounts VALUES (?,?,?,?);" > nonpci/populate.sql
-    ./install.sh
-
-### 7. Configure pg_service.conf
+    sudo -u postgres psql -f install.sql
     sudo sh -c 'cat pg_service.conf >> /etc/postgresql-common/pg_service.conf'
+	perl Makefile.PL && make && sudo make install
+	sudo cp sites-available/pci-ssl /etc/apache2/sites-available/pci-ssl
+	sudo cp sites-available/nonpci-ssl /etc/apache2/sites-available/nonpci-ssl
+	sudo a2enmod perl ssl
+	sudo a2ensite pci-ssl nonpci-ssl
+	sudo service apache2 restart
+    sudo -u www-data prove
 
-### 8. Configure Apache
-
-Add the lines below between `<VirtualHost *:80>` and `</VirtualHost>`
-to your sites-enabled file, or to the default file if this
-is a new installation, such as `/etc/apache2/sites-enabled/000-default`
-
-    <Location /postgres>
-        SetHandler perl-script
-        PerlResponseHandler Plack::Handler::Apache2
-        PerlSetVar psgi_app /usr/local/bin/pg_proc_jsonrpc.psgi
-    </Location>
-    <Perl>
-        use Plack::Handler::Apache2;
-        Plack::Handler::Apache2->preload("/usr/local/bin/pg_proc_jsonrpc.psgi");
-    </Perl>
-
-### 9. Restart Apache
-    sudo service apache2 restart
-
-### 11. Done!

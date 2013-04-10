@@ -1,0 +1,20 @@
+<IfModule mod_ssl.c>
+<VirtualHost _default_:443>
+    ServerRoot "/usr"
+    Listen 30002
+	ErrorLog /tmp/httpd-pci-error.log
+	LogLevel warn
+    ServerName localhost:443
+    PidFile /tmp/httpd-pci.pid
+    LockFile /tmp/httpd-pci.lock
+	SSLEngine on
+	SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
+	SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+    <Location /pci>
+        SetHandler perl-script
+        PerlResponseHandler Plack::Handler::Apache2
+        PerlSetVar pg_service_name pci
+        PerlSetVar psgi_app /usr/local/bin/pci-blackbox.psgi
+    </Location>
+</VirtualHost>
+</IfModule>
