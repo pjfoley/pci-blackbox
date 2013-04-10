@@ -1,13 +1,11 @@
 <IfModule mod_ssl.c>
 <VirtualHost _default_:30001>
-	ErrorLog /tmp/httpd-nonpci-error.log
-	LogLevel warn
-    ServerName localhost:443
-    PidFile /tmp/httpd-nonpci.pid
-    LockFile /tmp/httpd-nonpci.lock
-	SSLEngine on
-	SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
-	SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+        ErrorLog /tmp/httpd-nonpci-error.log
+        LogLevel warn
+        ServerName localhost:30001
+        SSLEngine on
+        SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
+        SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
     <Location /nonpci>
         SetHandler perl-script
         PerlResponseHandler Plack::Handler::Apache2
