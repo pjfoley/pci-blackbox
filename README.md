@@ -21,24 +21,23 @@ Assumes clean OS. Skip packages you already have.
 ### 3. Aquire test account from any of the supported PSPs, currently only Adyen.
 
 ### 4. Insert the merchant account test credentials into the file nonpci/populate.sql
-	git clone git://github.com/joelonsql/pci-blackbox.git
-	# echo "INSERT INTO MerchantAccounts (PSP, MerchantAccount, URL, Username, Password, PCIBlackBoxURL) \
-	# VALUES ('Adyen', 'TrustlyCOM', 'https://pal-test.adyen.com/pal/servlet/soap/Payment', 'ws@Company.YourCompany', 'yourpassword', 'https://localhost:30002/pci');"\
-	# > ./pci-blackbox/nonpci/populate.sql
+    git clone git://github.com/joelonsql/pci-blackbox.git
+    # echo "INSERT INTO MerchantAccounts (PSP, MerchantAccount, URL, Username, Password, PCIBlackBoxURL) \
+    # VALUES ('Adyen', 'TrustlyCOM', 'https://pal-test.adyen.com/pal/servlet/soap/Payment', 'ws@Company.YourCompany', 'yourpassword', 'https://localhost:30002/pci');"\
+    # > ./pci-blackbox/nonpci/populate.sql
 
 ### 5. Install pci-blackbox
     cd pci-blackbox
     sudo -u postgres psql -f install.sql
     sudo sh -c 'cat pg_service.conf >> /etc/postgresql-common/pg_service.conf'
-	perl Makefile.PL && make && sudo make install
-	sudo cp sites-available/pci-ssl /etc/apache2/sites-available/pci-ssl
-	sudo cp sites-available/nonpci-ssl /etc/apache2/sites-available/nonpci-ssl
+    perl Makefile.PL && make && sudo make install
+    sudo cp sites-available/pci-ssl /etc/apache2/sites-available/pci-ssl
+    sudo cp sites-available/nonpci-ssl /etc/apache2/sites-available/nonpci-ssl
     sudo sh -c 'cat ports.conf >> /etc/apache2/ports.conf'
     sudo sh -c 'echo ServerName localhost >> /etc/apache2/httpd.conf'
-	sudo a2enmod perl ssl
-	sudo a2ensite pci-ssl nonpci-ssl
-	sudo service apache2 restart
+    sudo a2enmod perl ssl
+    sudo a2ensite pci-ssl nonpci-ssl
+    sudo service apache2 restart
     sudo -u www-data prove
-	sudo cp -r nonpci/www_document_root /var/www/nonpci
-	sudo cp -r pci/www_document_root /var/www/pci
-	
+    sudo cp -r nonpci/www_document_root /var/www/nonpci
+    sudo cp -r pci/www_document_root /var/www/pci
