@@ -78,7 +78,7 @@ cmp_deeply(
     $authorise_request,
     {
         authoriserequestid => re('^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$'),
-        termurl            => re('^http')
+        termurl            => re('^http'),
         issuerurl          => re('^http'),
         md                 => re('.+'),
         parequest          => re('.+')
