@@ -99,7 +99,7 @@ my $app = sub {
     my $pg = DBIx::Pg::CallFunction->new($dbh);
     my $prefixed_lower_case_params = {};
     foreach my $k (keys %{$params}) {
-        $prefixed_lower_case_params->{lc(_$k)} = $params->{$k};
+        $prefixed_lower_case_params->{"_" . lc($k)} = $params->{$k};
     }
     my $result = $pg->$function_name($prefixed_lower_case_params, $namespace);
     $dbh->disconnect;
