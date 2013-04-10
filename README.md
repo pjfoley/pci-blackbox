@@ -37,7 +37,7 @@ Assumes clean OS. Skip packages you already have.
     sudo sh -c 'echo ServerName localhost >> /etc/apache2/httpd.conf'
     sudo a2enmod perl ssl
     sudo a2ensite pci-ssl nonpci-ssl
-    sudo service apache2 restart
-    sudo -u www-data prove
     sudo cp -r nonpci/www_document_root /var/www/nonpci
     sudo cp -r pci/www_document_root /var/www/pci
+    sudo service apache2 reload
+    sudo -u www-data prove
