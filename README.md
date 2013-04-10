@@ -34,6 +34,7 @@ Assumes clean OS. Skip packages you already have.
 	sudo cp sites-available/pci-ssl /etc/apache2/sites-available/pci-ssl
 	sudo cp sites-available/nonpci-ssl /etc/apache2/sites-available/nonpci-ssl
     sudo sh -c 'cat ports.conf >> /etc/apache2/ports.conf'
+    sudo sh -c 'echo ServerName localhost >> /etc/apache2/httpd.conf'
 	sudo a2enmod perl ssl
 	sudo a2ensite pci-ssl nonpci-ssl
 	sudo service apache2 restart
