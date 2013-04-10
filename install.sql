@@ -70,6 +70,7 @@ SET ROLE TO pci;
 \i pci/TABLES/cardnumberreferences.sql
 \i pci/TABLES/encryptedcards.sql
 \i pci/TABLES/encryptedcvcs.sql
+\i pci/TABLES/paresponses.sql
 \i pci/FUNCTIONS/encrypt_card.sql
 \i pci/FUNCTIONS/encrypt_cvc.sql
 \i pci/FUNCTIONS/authorise_payment_request.sql
@@ -80,6 +81,7 @@ SET ROLE TO pci;
 \i pci/FUNCTIONS/format_adyen_authorise_request_3d.sql
 \i pci/FUNCTIONS/parse_adyen_authorise_response.sql
 \i pci/FUNCTIONS/parse_adyen_authorise_response_3d.sql
+\i pci/FUNCTIONS/submit_paresponse.sql
 
 ALTER DEFAULT PRIVILEGES REVOKE ALL ON FUNCTIONS FROM PUBLIC;
 
