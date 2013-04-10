@@ -35,11 +35,18 @@
 								encrypted.currencycode = form.find('input[name=currencycode]').val();
 								encrypted.orderid = form.find('input[name=orderid]').val();
 								//Authorize the transaction using encrypted card data
-								$.ajax(nonpci_api + 'authorise', {
+								$.ajax(nonpci_api, {
 									type: 'POST',
 									dataType: 'json',
-									data: encrypted,
-									headers: { 'cache-control': 'no-cache' },
+									data: JSON.stringify({
+										method: 'authorise',
+										params: encrypted,
+										version: '1.1'
+									}),
+									contentType: 'application/json',
+									headers: {
+										'cache-control' : 'no-cache'
+									},
 									success: function(result) {
 										console.dir(result);
 									}
