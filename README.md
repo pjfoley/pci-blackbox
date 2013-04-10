@@ -39,4 +39,6 @@ Assumes clean OS. Skip packages you already have.
 	sudo a2ensite pci-ssl nonpci-ssl
 	sudo service apache2 restart
     sudo -u www-data prove
-
+	sudo cp -R nonpci/www_document_root /var/www/nonpci
+	sudo cp -R pci/www_document_root /var/www/pci
+	

@@ -1,5 +1,6 @@
 <IfModule mod_ssl.c>
 <VirtualHost _default_:30001>
+        DocumentRoot /var/www/nonpci
         ErrorLog /tmp/httpd-nonpci-error.log
         LogLevel warn
         ServerName localhost:30001

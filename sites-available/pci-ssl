@@ -1,5 +1,6 @@
 <IfModule mod_ssl.c>
 <VirtualHost _default_:30002>
+        DocumentRoot /var/www/pci
         ErrorLog /tmp/httpd-pci-error.log
         LogLevel warn
         ServerName localhost:30002
