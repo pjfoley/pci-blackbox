@@ -32,15 +32,16 @@ Assumes clean OS. Skip packages you already have.
     sudo sh -c 'cat pg_service.conf >> /etc/postgresql-common/pg_service.conf'
     perl Makefile.PL && make && sudo make install
     export MY_EXTERNAL_IP=`ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'`
-    sudo perl -s -i -p -e "s/MY_EXTERNAL_IP/$MY_EXTERNAL_IP/g" /etc/apache2/sites-available/*
     sudo cp sites-available/pci-ssl /etc/apache2/sites-available/pci-ssl
     sudo cp sites-available/nonpci-ssl /etc/apache2/sites-available/nonpci-ssl
+    sudo perl -s -i -p -e "s/MY_EXTERNAL_IP/$MY_EXTERNAL_IP/g" /etc/apache2/sites-available/*
     sudo sh -c 'cat ports.conf >> /etc/apache2/ports.conf'
     sudo sh -c 'echo ServerName localhost >> /etc/apache2/httpd.conf'
     sudo a2enmod perl ssl
     sudo a2ensite pci-ssl nonpci-ssl
     sudo cp -r nonpci/www_document_root /var/www/nonpci
     sudo cp -r pci/www_document_root /var/www/pci
+    sudo perl -s -i -p -e "s/MY_EXTERNAL_IP/$MY_EXTERNAL_IP/g" /var/www/nonpci/index.html
     sudo service apache2 reload
     sudo -u www-data prove
 
