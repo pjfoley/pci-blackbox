@@ -107,7 +107,8 @@ VALUES (_OrderID, _CurrencyCode, _PaymentAmount, _MerchantAccountID, _CardID, _A
 RETURNING AuthoriseRequests.AuthoriseRequestID INTO STRICT Authorise.AuthoriseRequestID;
 
 -- Set this to your own domain-name:
-TermURL := 'https://pciblackbox.com/3d/' || AuthoriseRequestID;
+
+TermURL := _PCIBlackBoxURL || '/submit_paresponse?authoriserequestid=' || AuthoriseRequestID;
 
 RETURN;
 
