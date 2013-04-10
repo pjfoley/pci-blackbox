@@ -99,9 +99,9 @@ my $app = sub {
     my $pg = DBIx::Pg::CallFunction->new($dbh);
     my $prefixed_params = {};
     foreach my $k (keys %{$params}) {
-        $prefixed_params->{"_$k"} = $params->{$k};
+        $prefixed_lower_case_params->{lc(_$k)} = $params->{$k};
     }
-    my $result = $pg->$function_name($prefixed_params, $namespace);
+    my $result = $pg->$function_name($prefixed_lower_case_params, $namespace);
     $dbh->disconnect;
 
     my $response = {
