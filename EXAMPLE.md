@@ -1,9 +1,11 @@
 # 1. Encrypt card
 
 ## 1.1. browser ---https---> pci
+
 	GET /pci/encrypt_card?callback=jQuery191026070669073427777_1365589442937&cardnumber=5212345678901234&cardexpirymonth=06&cardexpiryyear=2016&cardholdername=Test+Person&cardissuenumber=&cardstartmonth=&cardstartyear=&cardcvc=737&_=1365589442938 HTTP/1.1
 
 ## 1.2. browser <---https--- pci
+
 	HTTP/1.1 200 OK
 	jQuery191026070669073427777_1365589442937({
 		"cvckey" : "1eaf5bf64846c0b0bd71fe5339b018ae9179047c4b436b3214bdc282aaf7bc0a4b43411ee4616c00708d22903c0f2543f0e43949e7ec1678bc91ec44c95748cce300be36979c42d9ae42a9ab49c5f80de036c96efcc02456f53efd71a9dbf3cb9c67dedf81f2b2a5ea7498ff03dadff797320b89c9c82c7d8b08901d987685d28ead4bcfaccaf1d09b348819950b6f106e27f492c7190d46461fa08029bcc05762a7006798d1758fc297760ee0a8a2b2f8d2572c860ec3938b111990c9c5dd0d1f93ae23e99b78eaa4b97bc3eda385bdb29528d23859667669a6031c7a370663141c82de4e6d496db704af8245ebf845a48c9312fff5ae6b42680ee238332ef0",
@@ -16,6 +18,7 @@
 # 2. Pay using card
 
 ## 2.1. browser ---https---> nonpci
+
 	POST /nonpci/ HTTP/1.1
 	{
 		"method": "authorise",
@@ -33,6 +36,7 @@
 	}
 
 ### 2.1.1. nonpci ---https---> pci
+
 	POST /pci HTTP/1.1
 	{
 		"params": {
