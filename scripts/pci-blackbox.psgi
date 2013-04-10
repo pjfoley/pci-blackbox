@@ -22,7 +22,7 @@ my $app = sub {
             jsonrpc => '2.0',
             error => {
                 code => -32600,
-                message => 'Invalid Request.'
+                message => "Invalid Request. Got: REQUEST_METHOD: $env->{REQUEST_METHOD}, HTTP_ACCEPT: $env->{HTTP_ACCEPT}, CONTENT_TYPE: $env->{CONTENT_TYPE}"
             },
             id => undef
         }, {pretty => 1}) ]
@@ -39,7 +39,7 @@ my $app = sub {
             $params->{$k} = undef if $params->{$k} eq '';
         }
     } elsif ($env->{REQUEST_METHOD} eq 'POST' &&
-        $env->{HTTP_ACCEPT} eq 'application/json' &&
+        $env->{HTTP_ACCEPT} =~ m'application/json' &&
         $env->{CONTENT_TYPE} =~ m!^application/json!
     ) {
         my $json_input;
