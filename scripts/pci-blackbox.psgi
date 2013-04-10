@@ -97,7 +97,7 @@ my $app = sub {
     my $service = $ENV{pg_service_name};
     my $dbh = DBI->connect("dbi:Pg:service=$service", '', '', {pg_enable_utf8 => 1}) or die "unable to connect to PostgreSQL";
     my $pg = DBIx::Pg::CallFunction->new($dbh);
-    my $prefixed_params = {};
+    my $prefixed_lower_case_params = {};
     foreach my $k (keys %{$params}) {
         $prefixed_lower_case_params->{lc(_$k)} = $params->{$k};
     }
