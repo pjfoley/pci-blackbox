@@ -72,5 +72,16 @@ my $request_authorise = {
     cardlast4               => $encrypted_card->{cardlast4},
     cvckey                  => $encrypted_card->{cvckey}
 };
-my $authorise_request_id = $nonpci->authorise($request_authorise);
-like($authorise_request_id, qr/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/, 'Authorise');
+my $authorise_request = $nonpci->authorise($request_authorise);
+
+cmp_deeply(
+    $authorise_request,
+    {
+        authoriserequestid => re('^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$'),
+        termurl            => re('^http')
+        issuerurl          => re('^http'),
+        md                 => re('.+'),
+        parequest          => re('.+')
+    },
+    'Authorise'
+);

@@ -1,5 +1,9 @@
 CREATE OR REPLACE FUNCTION Authorise(
 OUT AuthoriseRequestID uuid,
+OUT TermURL text,
+OUT IssuerURL text,
+OUT MD text,
+OUT PARequest text,
 _OrderID text,
 _CurrencyCode char(3),
 _PaymentAmount numeric,
@@ -11,7 +15,7 @@ _CVCKey text,
 _Remote_Addr inet,
 _HTTP_User_Agent text,
 _HTTP_Accept text
-) RETURNS UUID AS $BODY$
+) RETURNS RECORD AS $BODY$
 DECLARE
 _ record;
 _PCIBlackBoxURL text;
@@ -32,9 +36,6 @@ _AuthCode integer;
 _DCCAmount numeric;
 _DCCSignature text;
 _FraudResult text;
-_IssuerURL text;
-_MD text;
-_PARequest text;
 _PSPReference text;
 _RefusalReason text;
 _ResultCode text;
@@ -74,9 +75,9 @@ INTO STRICT
     _DCCAmount,
     _DCCSignature,
     _FraudResult,
-    _IssuerURL,
-    _MD,
-    _PARequest,
+    Authorise.IssuerURL,
+    Authorise.MD,
+    Authorise.PARequest,
     _PSPReference,
     _RefusalReason,
     _ResultCode
@@ -102,8 +103,11 @@ FROM Authorise_Payment_Request_JSON_RPC(
 );
 
 INSERT INTO AuthoriseRequests (OrderID, CurrencyCode, PaymentAmount, MerchantAccountID, CardID, AuthCode, DCCAmount, DCCSignature, FraudResult, IssuerURL, MD, PARequest, PSPReference, RefusalReason, ResultCode)
-VALUES (_OrderID, _CurrencyCode, _PaymentAmount, _MerchantAccountID, _CardID, _AuthCode, _DCCAmount, _DCCSignature, _FraudResult, _IssuerURL, _MD, _PARequest, _PSPReference, _RefusalReason, _ResultCode)
+VALUES (_OrderID, _CurrencyCode, _PaymentAmount, _MerchantAccountID, _CardID, _AuthCode, _DCCAmount, _DCCSignature, _FraudResult, Authorise.IssuerURL, Authorise.MD, Authorise.PARequest, _PSPReference, _RefusalReason, _ResultCode)
 RETURNING AuthoriseRequests.AuthoriseRequestID INTO STRICT Authorise.AuthoriseRequestID;
+
+-- Set this to your own domain-name:
+TermURL := 'https://pciblackbox.com/3d/' || AuthoriseRequestID;
 
 RETURN;
 

@@ -3,7 +3,7 @@
         DocumentRoot /var/www/nonpci
         ErrorLog /tmp/httpd-nonpci-error.log
         LogLevel warn
-        ServerName localhost:30001
+        ServerName MY_EXTERNAL_IP:30001
         SSLEngine on
         SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
         SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
