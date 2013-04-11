@@ -1,3 +1,5 @@
+\set AUTOCOMMIT on
+
 -- This script must be invoked as a superuser
 CREATE GROUP nonpci WITH NOSUPERUSER NOCREATEDB;
 CREATE GROUP pci    WITH NOSUPERUSER NOCREATEDB;
@@ -33,9 +35,11 @@ SET ROLE TO nonpci;
 \i nonpci/TABLES/merchantaccounts.sql
 \i nonpci/TABLES/cards.sql
 \i nonpci/TABLES/authoriserequests.sql
+\i nonpci/TABLES/authorise3drequests.sql
 \i nonpci/FUNCTIONS/get_merchant_account.sql
 \i nonpci/FUNCTIONS/store_card_key.sql
 \i nonpci/FUNCTIONS/authorise.sql
+\i nonpci/FUNCTIONS/authorise_3d.sql
 
 -- This file needs to be created manually:
 \i nonpci/populate.sql
