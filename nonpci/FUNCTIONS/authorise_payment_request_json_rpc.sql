@@ -1,7 +1,5 @@
 CREATE OR REPLACE FUNCTION Authorise_Payment_Request_JSON_RPC(
 OUT AuthCode integer,
-OUT DCCAmount numeric,
-OUT DCCSignature text,
 OUT FraudResult text,
 OUT IssuerURL text,
 OUT MD text,

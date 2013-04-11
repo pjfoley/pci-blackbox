@@ -97,10 +97,8 @@ my $response = $pci->parse_adyen_authorise_response({
 cmp_deeply(
     $response,
     {
-        'dccamount'     => undef,
         'md'            => undef,
         'authcode'      => re('^\d+$'),
-        'dccsignature'  => undef,
         'fraudresult'   => undef,
         'parequest'     => undef,
         'refusalreason' => undef,

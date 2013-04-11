@@ -1,7 +1,5 @@
 CREATE OR REPLACE FUNCTION Parse_Adyen_Authorise_Response_3D(
 OUT AuthCode integer,
-OUT DCCAmount numeric,
-OUT DCCSignature text,
 OUT FraudResult text,
 OUT IssuerURL text,
 OUT MD text,
@@ -27,8 +25,6 @@ _NSArray := ARRAY[
 _BasePath := '/soap:Envelope/soap:Body/ns1:authorise3dResponse/ns1:paymentResult/ns1:';
 
 AuthCode      := (xpath(_BasePath || 'authCode/text()',     _XML,_NSArray))[1]::text;
-DCCAmount     := (xpath(_BasePath || 'dccAmount/text()',    _XML,_NSArray))[1]::text;
-DCCSignature  := (xpath(_BasePath || 'dccSignature/text()', _XML,_NSArray))[1]::text;
 FraudResult   := (xpath(_BasePath || 'fraudResult/text()',  _XML,_NSArray))[1]::text;
 IssuerURL     := (xpath(_BasePath || 'issuerUrl/text()',    _XML,_NSArray))[1]::text;
 MD            := (xpath(_BasePath || 'md/text()',           _XML,_NSArray))[1]::text;

@@ -1,7 +1,5 @@
 CREATE OR REPLACE FUNCTION Authorise_Payment_Request(
 OUT AuthCode integer,
-OUT DCCAmount numeric,
-OUT DCCSignature text,
 OUT FraudResult text,
 OUT IssuerURL text,
 OUT MD text,
@@ -78,8 +76,6 @@ _XMLResponse := HTTP_POST_XML(_URL, _Username, _Password, _XMLRequest);
 IF _PSP = 'Adyen' THEN
     SELECT
         Parse_Adyen_Authorise_Response.AuthCode,
-        Parse_Adyen_Authorise_Response.DCCAmount,
-        Parse_Adyen_Authorise_Response.DCCSignature,
         Parse_Adyen_Authorise_Response.FraudResult,
         Parse_Adyen_Authorise_Response.IssuerURL,
         Parse_Adyen_Authorise_Response.MD,
@@ -89,8 +85,6 @@ IF _PSP = 'Adyen' THEN
         Parse_Adyen_Authorise_Response.ResultCode
     INTO STRICT
         Authorise_Payment_Request.AuthCode,
-        Authorise_Payment_Request.DCCAmount,
-        Authorise_Payment_Request.DCCSignature,
         Authorise_Payment_Request.FraudResult,
         Authorise_Payment_Request.IssuerURL,
         Authorise_Payment_Request.MD,

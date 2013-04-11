@@ -124,10 +124,8 @@ my $authorise_payment_response = $pci->authorise_payment_request($request);
 cmp_deeply(
     $authorise_payment_response,
     {
-        'dccamount'     => undef,
         'md'            => re('^[a-zA-Z0-9/+=]+$'),
         'authcode'      => undef,
-        'dccsignature'  => undef,
         'fraudresult'   => undef,
         'parequest'     => re('^[a-zA-Z0-9/+=]+$'),
         'refusalreason' => undef,
