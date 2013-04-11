@@ -102,7 +102,7 @@ RETURNING AuthoriseRequests.AuthoriseRequestID INTO STRICT Authorise.AuthoriseRe
 
 -- Set this to your own domain-name:
 
-TermURL := 'https://192.168.50.129:30001/nonpci/authorise_3d?redirect=1&authoriserequestid=' || AuthoriseRequestID;
+TermURL := 'https://MY_EXTERNAL_IP:30001/nonpci/authorise_3d?redirect=1&authoriserequestid=' || AuthoriseRequestID;
 
 RETURN;
 

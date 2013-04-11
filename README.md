@@ -28,10 +28,11 @@ Assumes clean OS. Skip packages you already have.
 
 ### 5. Install pci-blackbox
     cd pci-blackbox
+    export MY_EXTERNAL_IP=`ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'`
+    sudo perl -s -i -p -e "s/MY_EXTERNAL_IP/$MY_EXTERNAL_IP/g" ./nonpci/FUNCTIONS/authorise.sql
     sudo -u postgres psql -f install.sql
     sudo sh -c 'cat pg_service.conf >> /etc/postgresql-common/pg_service.conf'
     perl Makefile.PL && make && sudo make install
-    export MY_EXTERNAL_IP=`ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}'`
     sudo cp sites-available/pci-ssl /etc/apache2/sites-available/pci-ssl
     sudo cp sites-available/nonpci-ssl /etc/apache2/sites-available/nonpci-ssl
     sudo perl -s -i -p -e "s/MY_EXTERNAL_IP/$MY_EXTERNAL_IP/g" /etc/apache2/sites-available/*
