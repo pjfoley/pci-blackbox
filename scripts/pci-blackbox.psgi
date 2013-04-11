@@ -80,7 +80,7 @@ my $app = sub {
     }
     my ($namespace, $function_name) = ($1, $2);
 
-    if ($function_name eq 'authorise' && !defined $namespace) {
+    if ($function_name =~ m/^(authorise|authorise_3d)$/ && !defined $namespace) {
         foreach my $k ('REMOTE_ADDR','HTTP_USER_AGENT','HTTP_ACCEPT') {
             $params->{lc($k)} = $env->{$k};
         }
