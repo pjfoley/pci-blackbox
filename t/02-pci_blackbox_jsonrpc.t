@@ -81,7 +81,8 @@ cmp_deeply(
         termurl            => re('^http'),
         issuerurl          => re('^http'),
         md                 => re('.+'),
-        parequest          => re('.+')
+        parequest          => re('.+'),
+        resultcode         => 'RedirectShopper'
     },
     'Authorise'
 );
