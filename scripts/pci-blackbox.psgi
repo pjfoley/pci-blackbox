@@ -94,6 +94,11 @@ my $app = sub {
         }
     }
 
+    my $redirect;
+    if (exists $params->{redirect}) {
+        $redirect = delete $params->{redirect};
+    }
+
     my $service = $ENV{pg_service_name};
     my $dbh = DBI->connect("dbi:Pg:service=$service", '', '', {pg_enable_utf8 => 1}) or die "unable to connect to PostgreSQL";
     my $pg = DBIx::Pg::CallFunction->new($dbh);
@@ -123,7 +128,12 @@ my $app = sub {
         return [
             '200',
             [ 'Content-Type' => 'application/javascript; charset=utf-8' ],
-            [ $callback . '(' . to_json($response->{result}, {pretty => 1}) . ');' ]
+            [ $callback . '(' . (ref($response->{result}) eq 'HASH' ? to_json($response->{result}, {pretty => 1}) : $response->{result}) . ');' ]
+        ];
+    } elsif($redirect) {
+        return [
+            '302',
+            [ 'Location' => $response->{result} ]
         ];
     } else {
         return [
