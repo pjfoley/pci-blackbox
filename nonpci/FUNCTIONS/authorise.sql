@@ -108,7 +108,7 @@ RETURNING AuthoriseRequests.AuthoriseRequestID INTO STRICT Authorise.AuthoriseRe
 
 -- Set this to your own domain-name:
 
-TermURL := 'https://192.168.35.131:30002/pci' || '/submit_paresponse?authoriserequestid=' || AuthoriseRequestID;
+TermURL := _PCIBlackBoxURL || '/submit_paresponse?authoriserequestid=' || AuthoriseRequestID;
 
 RETURN;
 
