@@ -1,5 +1,6 @@
 CREATE OR REPLACE FUNCTION Authorise(
 OUT AuthoriseRequestID uuid,
+OUT ResultCode text,
 OUT TermURL text,
 OUT IssuerURL text,
 OUT MD text,
@@ -38,7 +39,6 @@ _DCCSignature text;
 _FraudResult text;
 _PSPReference text;
 _RefusalReason text;
-_ResultCode text;
 BEGIN
 
 -- In production, resolve these variables from OrderID:
@@ -80,7 +80,7 @@ INTO STRICT
     Authorise.PARequest,
     _PSPReference,
     _RefusalReason,
-    _ResultCode
+    Authorise.ResultCode
 FROM Authorise_Payment_Request_JSON_RPC(
     _PCIBlackBoxURL,
     _CardKey,
@@ -103,12 +103,12 @@ FROM Authorise_Payment_Request_JSON_RPC(
 );
 
 INSERT INTO AuthoriseRequests (OrderID, CurrencyCode, PaymentAmount, MerchantAccountID, CardID, AuthCode, DCCAmount, DCCSignature, FraudResult, IssuerURL, MD, PARequest, PSPReference, RefusalReason, ResultCode)
-VALUES (_OrderID, _CurrencyCode, _PaymentAmount, _MerchantAccountID, _CardID, _AuthCode, _DCCAmount, _DCCSignature, _FraudResult, Authorise.IssuerURL, Authorise.MD, Authorise.PARequest, _PSPReference, _RefusalReason, _ResultCode)
+VALUES (_OrderID, _CurrencyCode, _PaymentAmount, _MerchantAccountID, _CardID, _AuthCode, _DCCAmount, _DCCSignature, _FraudResult, Authorise.IssuerURL, Authorise.MD, Authorise.PARequest, _PSPReference, _RefusalReason, Authorise.ResultCode)
 RETURNING AuthoriseRequests.AuthoriseRequestID INTO STRICT Authorise.AuthoriseRequestID;
 
 -- Set this to your own domain-name:
 
-TermURL := _PCIBlackBoxURL || '/submit_paresponse?authoriserequestid=' || AuthoriseRequestID;
+TermURL := 'https://192.168.50.129:30001/nonpci/authorise_3d?authoriserequestid=' || AuthoriseRequestID;
 
 RETURN;
 
