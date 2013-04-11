@@ -27,6 +27,7 @@ CREATE EXTENSION "uuid-ossp";
 
 -- plperlu functions, can only be created by superusers
 \i nonpci/FUNCTIONS/authorise_payment_request_json_rpc.sql
+\i nonpci/FUNCTIONS/authorise_payment_request_3d_json_rpc.sql
 
 SET ROLE TO nonpci;
 
