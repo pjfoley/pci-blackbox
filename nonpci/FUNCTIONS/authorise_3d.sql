@@ -52,7 +52,7 @@ FROM Authorise_Payment_Request_3D_JSON_RPC(
 );
 
 INSERT INTO Authorise3DRequests (AuthoriseRequestID, PSPReference, ResultCode, AuthCode, RefusalReason)
-VALUES (_AuthoriseRequestID, _PSPReference, _ResultCode, _AuthCode, _RefusalReason)
+VALUES (_AuthoriseRequestID, _PSPReference, Authorise_3D.ResultCode, _AuthCode, _RefusalReason)
 RETURNING Datestamp INTO STRICT _Datestamp;
 
 -- TEST
