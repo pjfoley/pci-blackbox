@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION Authorise_Payment_Request_3D(
 OUT PSPReference text,
 OUT ResultCode text,
-OUT AuthCode text,
+OUT AuthCode integer,
 OUT RefusalReason text,
 _PSP text,
 _MerchantAccount text,
