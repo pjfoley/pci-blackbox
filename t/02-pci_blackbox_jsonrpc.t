@@ -80,7 +80,7 @@ cmp_deeply(
         termurl            => re('^http'),
         issuerurl          => re('^http'),
         md                 => re('.+'),
-        pareq          => re('.+'),
+        pareq              => re('.+'),
         resultcode         => 'RedirectShopper'
     },
     'Authorise'
