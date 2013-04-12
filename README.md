@@ -6,6 +6,8 @@ This module aims to simplify the process of becoming PCI-DSS compliant,
 by handling card data in an isolated system, physically and logically
 separated from the rest of the system.
 
+![layout](https://github.com/joelonsql/pci-blackbox/blob/master/doc/pci-blackbox.png)
+
 The idea comes from a guy I met over a beer who works at Skype.
 He explained they had done something similar,
 they have/had a special "PCI server" kept secure behind locked doors,
