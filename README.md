@@ -36,11 +36,13 @@ Highlights:
 
 - 3-D Secure support
 
-- PSP-independent, like Spreedly, the API is generic, not specific to any gateway.
+- Gateway-independent, like Spreedly, the API is generic, not specific to any gateway, currently only Adyen is supported though.
 
 - Host your own payment page, like Stripe, you design your own payment page, and POST directly to the pci-blackbox.
 
 - PCI-DSS compliant.
+
+- Open sourced under the MIT-license
 
 This module is **work in progress** and has not been put into production yet.
 
