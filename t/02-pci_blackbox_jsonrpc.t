@@ -86,3 +86,55 @@ cmp_deeply(
     },
     'Authorise'
 );
+
+
+
+# Test 3, HTTPS POST issuer URL, load password form
+my $ua = LWP::UserAgent->new();
+my $http_response_load_password_form = $ua->post($authorise_request->{issuerurl}, {
+    PaReq   => $authorise_request->{parequest},
+    TermUrl => 'https://foo.bar.com/',
+    MD      => $authorise_request->{md}
+});
+ok($http_response_load_password_form->is_success, "HTTPS POST issuer URL, load password form");
+
+
+
+# Test 4, HTTPS POST issuer URL, submit password
+my $http_response_submit_password = $ua->post('https://test.adyen.com/hpp/3d/authenticate.shtml', {
+    PaReq      => $authorise_request->{parequest},
+    TermUrl    => 'https://foo.bar.com/',
+    MD         => $authorise_request->{md},
+    cardNumber => $cardnumber,
+    username   => 'user',
+    password   => 'password'
+});
+ok($http_response_submit_password->is_success, "HTTPS POST issuer URL, submit password");
+
+
+
+# Test 5, HTTPS POST issuer URL, parsed PaRes
+if ($http_response_submit_password->decoded_content =~ m/<input type="hidden" name="PaRes" value="([^"]+)"/) {
+    ok(1,"HTTPS POST issuer URL, parsed PaRes");
+}
+my $pares = $1;
+
+
+
+# Test 6, Authorise_Payment_Request_3D
+my $request_3d = {
+    authoriserequestid => $authorise_request->{authoriserequestid},
+    MD                 => $authorise_request->{md},
+    PaRes              => $pares,
+};
+my $response_3d = $nonpci->authorise_3d($request_authorise);
+cmp_deeply(
+    $response_3d,
+    {
+        'pspreference'  => re('^\d+$'),
+        'resultcode'    => 'Authorised',
+        'authcode'      => re('^\d+$'),
+        'refusalreason' => undef
+    },
+    'Authorise_Payment_Request_3D'
+);
