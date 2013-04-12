@@ -1,8 +1,57 @@
 # pci-blackbox
 
-PCI-DSS compliant card system built on PostgreSQL and PL/pgSQL
+PCI-DSS compliant system built on PostgreSQL and PL/pgSQL
 
-## Installation instructions for Ubuntu 12.04.
+This module aims to simplify the process of becoming PCI-DSS compliant,
+by handling card data in an isolated system, physically and logically
+separated from the rest of the system.
+
+The idea comes from a guy I met over a beer who works at Skype.
+He explained they had done something similar,
+they have/had a special "PCI server" kept secure behind locked doors,
+which only funciton was to encrypt/decrypt/process card data.
+
+I thought it sounded like a smart idea, for merchants who for some reason
+needs to become PCI-DSS compliant and cannot use a hosted payment solution.
+
+The company I work for is in the process of implementing card payments,
+and we cannot use a hosted solution, so we decided to give this concept a shot,
+and see if we managed to come up with something useful.
+Hopefully we have, you be the judge.
+
+The pci-blackbox must be run on a separate server from the main system.
+In this test, everything is being run on the same machine though.
+
+The API consist of three functions:
+
+encrypt_card(): Encrypt sensitive card data, return a CardKey.
+authorise_payment_request(): Authorise payment using a CardKey.
+authorise_payment_request_3d(): Authorise 3-D Secure payment.
+
+Highlights:
+
+- 3-D Secure support
+
+- PSP-independent, like Spreedly, the API is generic, not specific to any gateway.
+
+- Host your own payment page, like Stripe, you design your own payment page, and POST directly to the pci-blackbox.
+
+- PCI-DSS compliant.
+
+This module is work in progress and has not been put into production yet.
+
+If anyone know of any other similar open source project, which provides
+an isolated card-component, please let me know. Couldn't find any,
+so that's why I started hacking on this.
+
+The files under /nonpci is just an example implementation
+on how to use the pci-blackbox.
+
+The installation instructions only setup a test environment.
+
+Any feedback is very much appreciated, thank you!
+
+## Installation instructions for Ubuntu 12.04.2 LTS (Precise Pangolin)
 
 Assumes clean OS. Skip packages you already have.
 
