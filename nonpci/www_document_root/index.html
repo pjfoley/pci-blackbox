@@ -53,11 +53,11 @@
                                             return;
                                         }
                                         
-                                        if (r.result.md && r.result.issuerurl && r.result.parequest && r.result.termurl) {
+                                        if (r.result.md && r.result.issuerurl && r.result.pareq && r.result.termurl) {
                                             //3D-Secure enabled card, redirect the enduser
                                             var redirectForm = $('<form></form>').attr('method','POST').attr('action',r.result.issuerurl);
                                             redirectForm.append($('<input type="hidden" name="MD">').val(r.result.md));
-                                            redirectForm.append($('<input type="hidden" name="PaReq">').val(r.result.parequest));
+                                            redirectForm.append($('<input type="hidden" name="PaReq">').val(r.result.pareq));
                                             redirectForm.append($('<input type="hidden" name="TermUrl">').val(r.result.termurl));
                                             form.after(redirectForm);
                                             redirectForm.submit();

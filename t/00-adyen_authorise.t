@@ -100,7 +100,7 @@ cmp_deeply(
         'md'            => undef,
         'authcode'      => re('^\d+$'),
         'fraudresult'   => undef,
-        'parequest'     => undef,
+        'pareq'     => undef,
         'refusalreason' => undef,
         'issuerurl'     => undef,
         'resultcode'    => 'Authorised',

@@ -80,7 +80,7 @@ cmp_deeply(
         termurl            => re('^http'),
         issuerurl          => re('^http'),
         md                 => re('.+'),
-        parequest          => re('.+'),
+        pareq          => re('.+'),
         resultcode         => 'RedirectShopper'
     },
     'Authorise'
@@ -91,7 +91,7 @@ cmp_deeply(
 # Test 3, HTTPS POST issuer URL, load password form
 my $ua = LWP::UserAgent->new();
 my $http_response_load_password_form = $ua->post($authorise_request->{issuerurl}, {
-    PaReq   => $authorise_request->{parequest},
+    PaReq   => $authorise_request->{pareq},
     TermUrl => 'https://foo.bar.com/',
     MD      => $authorise_request->{md}
 });
@@ -101,7 +101,7 @@ ok($http_response_load_password_form->is_success, "HTTPS POST issuer URL, load p
 
 # Test 4, HTTPS POST issuer URL, submit password
 my $http_response_submit_password = $ua->post('https://test.adyen.com/hpp/3d/authenticate.shtml', {
-    PaReq      => $authorise_request->{parequest},
+    PaReq      => $authorise_request->{pareq},
     TermUrl    => 'https://foo.bar.com/',
     MD         => $authorise_request->{md},
     cardNumber => $cardnumber,

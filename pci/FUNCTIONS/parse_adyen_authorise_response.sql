@@ -3,7 +3,7 @@ OUT AuthCode integer,
 OUT FraudResult text,
 OUT IssuerURL text,
 OUT MD text,
-OUT PARequest text,
+OUT PaReq text,
 OUT PSPReference text,
 OUT RefusalReason text,
 OUT ResultCode text,
@@ -28,7 +28,7 @@ AuthCode      := (xpath(_BasePath || 'authCode/text()',     _XML,_NSArray))[1]::
 FraudResult   := (xpath(_BasePath || 'fraudResult/text()',  _XML,_NSArray))[1]::text;
 IssuerURL     := (xpath(_BasePath || 'issuerUrl/text()',    _XML,_NSArray))[1]::text;
 MD            := (xpath(_BasePath || 'md/text()',           _XML,_NSArray))[1]::text;
-PARequest     := (xpath(_BasePath || 'paRequest/text()',    _XML,_NSArray))[1]::text;
+PaReq     := (xpath(_BasePath || 'paRequest/text()',    _XML,_NSArray))[1]::text;
 PSPReference  := (xpath(_BasePath || 'pspReference/text()', _XML,_NSArray))[1]::text;
 RefusalReason := (xpath(_BasePath || 'refusalReason/text()',_XML,_NSArray))[1]::text;
 ResultCode    := (xpath(_BasePath || 'resultCode/text()',   _XML,_NSArray))[1]::text;

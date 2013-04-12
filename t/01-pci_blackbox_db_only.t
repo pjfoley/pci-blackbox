@@ -127,7 +127,7 @@ cmp_deeply(
         'md'            => re('^[a-zA-Z0-9/+=]+$'),
         'authcode'      => undef,
         'fraudresult'   => undef,
-        'parequest'     => re('^[a-zA-Z0-9/+=]+$'),
+        'pareq'     => re('^[a-zA-Z0-9/+=]+$'),
         'refusalreason' => undef,
         'issuerurl'     => re('^https://'),
         'resultcode'    => 'RedirectShopper',
@@ -141,7 +141,7 @@ cmp_deeply(
 # Test 5, HTTPS POST issuer URL, load password form
 my $ua = LWP::UserAgent->new();
 my $http_response_load_password_form = $ua->post($authorise_payment_response->{issuerurl}, {
-    PaReq   => $authorise_payment_response->{parequest},
+    PaReq   => $authorise_payment_response->{pareq},
     TermUrl => 'https://foo.bar.com/',
     MD      => $authorise_payment_response->{md}
 });
@@ -151,7 +151,7 @@ ok($http_response_load_password_form->is_success, "HTTPS POST issuer URL, load p
 
 # Test 6, HTTPS POST issuer URL, submit password
 my $http_response_submit_password = $ua->post('https://test.adyen.com/hpp/3d/authenticate.shtml', {
-    PaReq      => $authorise_payment_response->{parequest},
+    PaReq      => $authorise_payment_response->{pareq},
     TermUrl    => 'https://foo.bar.com/',
     MD         => $authorise_payment_response->{md},
     cardNumber => $cardnumber,
@@ -179,8 +179,8 @@ my $request_3d = {
     _password                => $merchant_account->{password},
     _browserinfoacceptheader => $browserinfoacceptheader,
     _browserinfouseragent    => $browserinfouseragent,
-    _issuermd                => $authorise_payment_response->{md},
-    _issuerparesponse        => $pares,
+    _md                => $authorise_payment_response->{md},
+    _pares        => $pares,
     _shopperip               => $shopperip
 };
 my $response_3d = $pci->authorise_payment_request_3d($request_3d);

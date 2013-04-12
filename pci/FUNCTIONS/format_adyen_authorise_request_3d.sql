@@ -1,9 +1,9 @@
 CREATE OR REPLACE FUNCTION Format_Adyen_Authorise_Request_3D(
 _BrowserInfoAcceptHeader text,
 _BrowserInfoUserAgent text,
-_IssuerMD text,
+_MD text,
 _MerchantAccount text,
-_IssuerPAResponse text,
+_PaRes text,
 _ShopperIP inet
 ) RETURNS xml AS $BODY$
 DECLARE
@@ -40,7 +40,7 @@ RETURN xmlelement(
                 xmlelement(
                     name "md",
                     xmlattributes('http://payment.services.adyen.com' AS "xmlns"),
-                    _IssuerMD
+                    _MD
                 ),
                 xmlelement(
                     name "merchantAccount",
@@ -50,7 +50,7 @@ RETURN xmlelement(
                 xmlelement(
                     name "paResponse",
                     xmlattributes('http://payment.services.adyen.com' AS "xmlns"),
-                    _IssuerPAResponse
+                    _PaRes
                 ),
                 xmlelement(
                     name "shopperIP",

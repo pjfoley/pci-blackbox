@@ -4,7 +4,7 @@ OUT ResultCode text,
 OUT TermURL text,
 OUT IssuerURL text,
 OUT MD text,
-OUT PARequest text,
+OUT PaReq text,
 _OrderID text,
 _CurrencyCode char(3),
 _PaymentAmount numeric,
@@ -62,7 +62,7 @@ SELECT
     Authorise_Payment_Request_JSON_RPC.FraudResult,
     Authorise_Payment_Request_JSON_RPC.IssuerURL,
     Authorise_Payment_Request_JSON_RPC.MD,
-    Authorise_Payment_Request_JSON_RPC.PARequest,
+    Authorise_Payment_Request_JSON_RPC.PaReq,
     Authorise_Payment_Request_JSON_RPC.PSPReference,
     Authorise_Payment_Request_JSON_RPC.RefusalReason,
     Authorise_Payment_Request_JSON_RPC.ResultCode
@@ -71,7 +71,7 @@ INTO STRICT
     _FraudResult,
     Authorise.IssuerURL,
     Authorise.MD,
-    Authorise.PARequest,
+    Authorise.PaReq,
     _PSPReference,
     _RefusalReason,
     Authorise.ResultCode
@@ -96,8 +96,8 @@ FROM Authorise_Payment_Request_JSON_RPC(
     _HTTP_User_Agent
 );
 
-INSERT INTO AuthoriseRequests (OrderID, CurrencyCode, PaymentAmount, MerchantAccountID, CardID, AuthCode, FraudResult, IssuerURL, MD, PARequest, PSPReference, RefusalReason, ResultCode)
-VALUES (_OrderID, _CurrencyCode, _PaymentAmount, _MerchantAccountID, _CardID, _AuthCode, _FraudResult, Authorise.IssuerURL, Authorise.MD, Authorise.PARequest, _PSPReference, _RefusalReason, Authorise.ResultCode)
+INSERT INTO AuthoriseRequests (OrderID, CurrencyCode, PaymentAmount, MerchantAccountID, CardID, AuthCode, FraudResult, IssuerURL, MD, PaReq, PSPReference, RefusalReason, ResultCode)
+VALUES (_OrderID, _CurrencyCode, _PaymentAmount, _MerchantAccountID, _CardID, _AuthCode, _FraudResult, Authorise.IssuerURL, Authorise.MD, Authorise.PaReq, _PSPReference, _RefusalReason, Authorise.ResultCode)
 RETURNING AuthoriseRequests.AuthoriseRequestID INTO STRICT Authorise.AuthoriseRequestID;
 
 -- Set this to your own domain-name:
