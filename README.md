@@ -42,7 +42,9 @@ Highlights:
 
 - PCI-DSS compliant.
 
-- Open sourced under the MIT-license
+- Open sourced under the MIT-license.
+
+- JSON API.
 
 This module is **work in progress** and has not been put into production yet.
 
