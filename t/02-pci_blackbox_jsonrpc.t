@@ -11,7 +11,7 @@ use JSON qw(from_json to_json);
 use DBI;
 use DBIx::Pg::CallFunction;
 
-plan tests => 2;
+plan tests => 6;
 
 my $nonpci = JSON::RPC::Simple::Client->new('https://localhost:30001/nonpci');
 my $pci    = JSON::RPC::Simple::Client->new('https://localhost:30002/pci');
@@ -73,7 +73,6 @@ my $request_authorise = {
     cvckey                  => $encrypted_card->{cvckey}
 };
 my $authorise_request = $nonpci->authorise($request_authorise);
-
 cmp_deeply(
     $authorise_request,
     {
@@ -121,20 +120,12 @@ my $pares = $1;
 
 
 
-# Test 6, Authorise_Payment_Request_3D
+
+# Test 6, Authorise_3D
 my $request_3d = {
     authoriserequestid => $authorise_request->{authoriserequestid},
     MD                 => $authorise_request->{md},
     PaRes              => $pares,
 };
-my $response_3d = $nonpci->authorise_3d($request_authorise);
-cmp_deeply(
-    $response_3d,
-    {
-        'pspreference'  => re('^\d+$'),
-        'resultcode'    => 'Authorised',
-        'authcode'      => re('^\d+$'),
-        'refusalreason' => undef
-    },
-    'Authorise_Payment_Request_3D'
-);
+my $response_3d = $nonpci->authorise_3d($request_3d);
+like($response_3d, qr/^http/, 'Authorise_3D');
