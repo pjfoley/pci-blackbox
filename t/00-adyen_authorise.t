@@ -45,8 +45,8 @@ my $order = {
     _cardexpirymonth         => 06,
     _cardexpiryyear          => 2016,
     _cardholdername          => 'Adyen Test',
-    _browserinfoacceptheader => 'text/html,application/xhtml+xml, application/xml;q=0.9,*/*;q=0.8',
-    _browserinfouseragent    => 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9) Gecko/2008052912 Firefox/3.0'
+    _http_accept => 'text/html,application/xhtml+xml, application/xml;q=0.9,*/*;q=0.8',
+    _http_user_agent    => 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9) Gecko/2008052912 Firefox/3.0'
 };
 
 
@@ -69,8 +69,8 @@ like($request_xml, qr!
                         <number>$order->{_cardnumber}</number>\s*
                     </card>\s*
                     <browserInfo\ xmlns="http://payment\.services\.adyen\.com">\s*
-                        <acceptHeader\ xmlns="http://common\.services\.adyen\.com">\Q$order->{_browserinfoacceptheader}\E</acceptHeader>\s*
-                        <userAgent\ xmlns="http://common\.services\.adyen\.com">\Q$order->{_browserinfouseragent}\E</userAgent>\s*
+                        <acceptHeader\ xmlns="http://common\.services\.adyen\.com">\Q$order->{_http_accept}\E</acceptHeader>\s*
+                        <userAgent\ xmlns="http://common\.services\.adyen\.com">\Q$order->{_http_user_agent}\E</userAgent>\s*
                     </browserInfo>\s*
                     <merchantAccount\ xmlns="http://payment\.services\.adyen\.com">\Q$order->{_merchantaccount}\E</merchantAccount>\s*
                     <reference\ xmlns="http://payment\.services\.adyen\.com">\Q$order->{_reference}\E</reference>\s*

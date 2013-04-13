@@ -11,8 +11,8 @@ _CardNumber text,
 _CardExpiryMonth integer,
 _CardExpiryYear integer,
 _CardHolderName text,
-_BrowserInfoAcceptHeader text,
-_BrowserInfoUserAgent text
+_HTTP_ACCEPT text,
+_HTTP_USER_AGENT text
 ) RETURNS xml AS $BODY$
 DECLARE
 BEGIN
@@ -75,12 +75,12 @@ RETURN xmlelement(
                     xmlelement(
                         name "acceptHeader",
                         xmlattributes('http://common.services.adyen.com' AS "xmlns"),
-                        _BrowserInfoAcceptHeader
+                        _HTTP_ACCEPT
                     ),
                     xmlelement(
                         name "userAgent",
                         xmlattributes('http://common.services.adyen.com' AS "xmlns"),
-                        _BrowserInfoUserAgent
+                        _HTTP_USER_AGENT
                     )
                 ),
                 xmlelement(

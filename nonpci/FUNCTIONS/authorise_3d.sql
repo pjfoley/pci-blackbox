@@ -3,9 +3,9 @@ OUT TermURL text,
 _AuthoriseRequestID uuid,
 _MD text,
 _PaRes text,
-_Remote_Addr inet,
-_HTTP_User_Agent text,
-_HTTP_Accept text
+_REMOTE_ADDR inet,
+_HTTP_USER_AGENT text,
+_HTTP_ACCEPT text
 ) RETURNS TEXT AS $BODY$
 DECLARE
 _PCIBlackBoxURL text;
@@ -41,11 +41,11 @@ FROM Authorise_Payment_Request_3D_JSON_RPC(
     _URL,
     _Username,
     _Password,
-    _HTTP_Accept,
-    _HTTP_User_Agent,
+    _HTTP_ACCEPT,
+    _HTTP_USER_AGENT,
     _MD,
     _PaRes,
-    _Remote_Addr
+    _REMOTE_ADDR
 );
 
 INSERT INTO Authorise3DRequests (AuthoriseRequestID, PSPReference, ResultCode, AuthCode)
@@ -63,5 +63,5 @@ RETURN;
 END;
 $BODY$ LANGUAGE plpgsql VOLATILE SECURITY DEFINER;
 
-REVOKE ALL ON FUNCTION Authorise_3D(_AuthoriseRequestID uuid, _MD text, _PaRes text, _Remote_Addr inet, _HTTP_User_Agent text, _HTTP_Accept text) FROM PUBLIC;
-GRANT  ALL ON FUNCTION Authorise_3D(_AuthoriseRequestID uuid, _MD text, _PaRes text, _Remote_Addr inet, _HTTP_User_Agent text, _HTTP_Accept text) TO GROUP nonpci;
+REVOKE ALL ON FUNCTION Authorise_3D(_AuthoriseRequestID uuid, _MD text, _PaRes text, _REMOTE_ADDR inet, _HTTP_USER_AGENT text, _HTTP_ACCEPT text) FROM PUBLIC;
+GRANT  ALL ON FUNCTION Authorise_3D(_AuthoriseRequestID uuid, _MD text, _PaRes text, _REMOTE_ADDR inet, _HTTP_USER_AGENT text, _HTTP_ACCEPT text) TO GROUP nonpci;

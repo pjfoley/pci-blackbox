@@ -1,6 +1,6 @@
 CREATE OR REPLACE FUNCTION Format_Adyen_Authorise_Request_3D(
-_BrowserInfoAcceptHeader text,
-_BrowserInfoUserAgent text,
+_HTTP_ACCEPT text,
+_HTTP_USER_AGENT text,
 _MD text,
 _MerchantAccount text,
 _PaRes text,
@@ -29,12 +29,12 @@ RETURN xmlelement(
                     xmlelement(
                         name "acceptHeader",
                         xmlattributes('http://common.services.adyen.com' AS "xmlns"),
-                        _BrowserInfoAcceptHeader
+                        _HTTP_ACCEPT
                     ),
                     xmlelement(
                         name "userAgent",
                         xmlattributes('http://common.services.adyen.com' AS "xmlns"),
-                        _BrowserInfoUserAgent
+                        _HTTP_USER_AGENT
                     )
                 ),
                 xmlelement(

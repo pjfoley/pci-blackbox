@@ -18,8 +18,8 @@ _Reference text,
 _ShopperIP inet,
 _ShopperEmail text,
 _ShopperReference text,
-_BrowserInfoAcceptHeader text,
-_BrowserInfoUserAgent text
+_HTTP_ACCEPT text,
+_HTTP_USER_AGENT text
 ) RETURNS RECORD AS $BODY$
 DECLARE
 _CardNumber text;
@@ -60,8 +60,8 @@ IF _PSP = 'Adyen' THEN
         _CardExpiryMonth,
         _CardExpiryYear,
         _CardHolderName,
-        _BrowserInfoAcceptHeader,
-        _BrowserInfoUserAgent
+        _HTTP_ACCEPT,
+        _HTTP_USER_AGENT
     );
 ELSE
     RAISE EXCEPTION 'ERROR_UNSUPPORTED_PSP %', _PSP;
@@ -93,5 +93,5 @@ RETURN;
 END;
 $BODY$ LANGUAGE plpgsql VOLATILE SECURITY DEFINER;
 
-REVOKE ALL ON FUNCTION Authorise_Payment_Request(_CardKey text, _CVCKey text, _PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _CurrencyCode char(3), _PaymentAmount numeric, _Reference text, _ShopperIP inet, _ShopperEmail text, _ShopperReference text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text) FROM PUBLIC;
-GRANT  ALL ON FUNCTION Authorise_Payment_Request(_CardKey text, _CVCKey text, _PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _CurrencyCode char(3), _PaymentAmount numeric, _Reference text, _ShopperIP inet, _ShopperEmail text, _ShopperReference text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text) TO GROUP pci;
+REVOKE ALL ON FUNCTION Authorise_Payment_Request(_CardKey text, _CVCKey text, _PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _CurrencyCode char(3), _PaymentAmount numeric, _Reference text, _ShopperIP inet, _ShopperEmail text, _ShopperReference text, _HTTP_ACCEPT text, _HTTP_USER_AGENT text) FROM PUBLIC;
+GRANT  ALL ON FUNCTION Authorise_Payment_Request(_CardKey text, _CVCKey text, _PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _CurrencyCode char(3), _PaymentAmount numeric, _Reference text, _ShopperIP inet, _ShopperEmail text, _ShopperReference text, _HTTP_ACCEPT text, _HTTP_USER_AGENT text) TO GROUP pci;

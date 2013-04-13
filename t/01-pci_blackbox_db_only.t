@@ -35,8 +35,8 @@ my $shopperip               = '1.2.3.4';
 my $cardcvc                 = 737;
 my $shopperemail            = 'test@test.com';
 my $shopperreference        = rand();
-my $browserinfoacceptheader = 'text/html,application/xhtml+xml, application/xml;q=0.9,*/*;q=0.8';
-my $browserinfouseragent    = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9) Gecko/2008052912 Firefox/3.0';
+my $http_accept             = 'text/html,application/xhtml+xml, application/xml;q=0.9,*/*;q=0.8';
+my $http_user_agent         = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9) Gecko/2008052912 Firefox/3.0';
 
 
 
@@ -113,8 +113,8 @@ my $request = {
     _shopperip               => $shopperip,
     _shopperemail            => $shopperemail,
     _shopperreference        => $shopperreference,
-    _browserinfoacceptheader => $browserinfoacceptheader,
-    _browserinfouseragent    => $browserinfouseragent
+    _http_accept             => $http_accept,
+    _http_user_agent         => $http_user_agent
 };
 my $authorise_payment_response = $pci->authorise_payment_request($request);
 cmp_deeply(
@@ -171,8 +171,8 @@ my $request_3d = {
     _url                     => $merchant_account->{url},
     _username                => $merchant_account->{username},
     _password                => $merchant_account->{password},
-    _browserinfoacceptheader => $browserinfoacceptheader,
-    _browserinfouseragent    => $browserinfouseragent,
+    _http_accept             => $http_accept,
+    _http_user_agent         => $http_user_agent,
     _md                      => $authorise_payment_response->{md},
     _pares                   => $pares,
     _shopperip               => $shopperip

@@ -7,8 +7,8 @@ _MerchantAccount text,
 _URL text,
 _Username text,
 _Password text,
-_BrowserInfoAcceptHeader text,
-_BrowserInfoUserAgent text,
+_HTTP_ACCEPT text,
+_HTTP_USER_AGENT text,
 _MD text,
 _PaRes text,
 _ShopperIP inet
@@ -20,8 +20,8 @@ BEGIN
 
 IF _PSP = 'Adyen' THEN
     _XMLRequest := Format_Adyen_Authorise_Request_3D(
-        _BrowserInfoAcceptHeader,
-        _BrowserInfoUserAgent,
+        _HTTP_ACCEPT,
+        _HTTP_USER_AGENT,
         _MD,
         _MerchantAccount,
         _PaRes,
@@ -51,5 +51,5 @@ RETURN;
 END;
 $BODY$ LANGUAGE plpgsql VOLATILE SECURITY DEFINER;
 
-REVOKE ALL ON FUNCTION Authorise_Payment_Request_3D(_PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text, _MD text, _PaRes text, _ShopperIP inet) FROM PUBLIC;
-GRANT  ALL ON FUNCTION Authorise_Payment_Request_3D(_PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text, _MD text, _PaRes text, _ShopperIP inet) TO GROUP pci;
+REVOKE ALL ON FUNCTION Authorise_Payment_Request_3D(_PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _HTTP_ACCEPT text, _HTTP_USER_AGENT text, _MD text, _PaRes text, _ShopperIP inet) FROM PUBLIC;
+GRANT  ALL ON FUNCTION Authorise_Payment_Request_3D(_PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _HTTP_ACCEPT text, _HTTP_USER_AGENT text, _MD text, _PaRes text, _ShopperIP inet) TO GROUP pci;
