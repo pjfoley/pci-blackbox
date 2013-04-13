@@ -2,7 +2,6 @@ CREATE OR REPLACE FUNCTION Authorise_Payment_Request_3D(
 OUT PSPReference text,
 OUT ResultCode text,
 OUT AuthCode integer,
-OUT RefusalReason text,
 _PSP text,
 _MerchantAccount text,
 _URL text,
@@ -38,13 +37,11 @@ IF _PSP = 'Adyen' THEN
     SELECT
         Parse_Adyen_Authorise_Response_3D.PSPReference,
         Parse_Adyen_Authorise_Response_3D.ResultCode,
-        Parse_Adyen_Authorise_Response_3D.AuthCode,
-        Parse_Adyen_Authorise_Response_3D.RefusalReason
+        Parse_Adyen_Authorise_Response_3D.AuthCode
     INTO STRICT
         Authorise_Payment_Request_3D.PSPReference,
         Authorise_Payment_Request_3D.ResultCode,
-        Authorise_Payment_Request_3D.AuthCode,
-        Authorise_Payment_Request_3D.RefusalReason
+        Authorise_Payment_Request_3D.AuthCode
     FROM Parse_Adyen_Authorise_Response_3D(_XMLResponse);
 ELSE
     RAISE EXCEPTION 'ERROR_UNSUPPORTED_PSP %', _PSP;

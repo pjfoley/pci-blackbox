@@ -52,10 +52,8 @@
             "url": "https://pal-test.adyen.com/pal/servlet/soap/Payment",
             "psp": "Adyen",
             "paymentamount": "100",
-            "fraudoffset": null,
             "username": "your_psp_username",
             "browserinfouseragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:19.0) Gecko/20100101 Firefox/19.0",
-            "selectedbrand": null,
             "currencycode": "EUR"
         },
         "version": "1.1",
@@ -87,9 +85,7 @@
        "result" : {
           "md" : "RXdY6/jocNz4DwEuFBaXjrnDk1pITVCu+KC0E2KMTeadrk9pBU4B3NXhaaRFjh3sUi5djeozCc70H2e4CRpSRSST7H6gaaG60oPBAwBDwjdbY3W1zt9BXZouz+P5oj0YXeFywAIEwYZQriWuzsR8dGIsgxBwGR1/50GI01BPu6K8qlAZSybTBXKBkCjNWOKXC3G7OAz/2IyX9YfMjiU66apQZku9qFeG/S3fFuaBIWY2pwPMWvC51X2kbcLo0c1gStFhejGV+uzE3Z5v50adyMfTNeOCaRvmejaLgLkHC0UPe+iibYrdwx9cR/fd6i4pULakMOwcqUxIIdWnlxmcaD+VoK+PbnAqrWAZ2fML9B8=",
           "authcode" : null,
-          "fraudresult" : null,
           "pareq" : "eNpVUdtuwjAM/RXEB9RJ7yATqaOTxkOBbeVhj1WwoBJtIU3H5euXtDC2vOSc49ixjzHfK6L0k2SnSGBGbVvsaFRuZ+NpHHAvDIJ4EodB5IdsLHCdfNBJ4DeptmxqwR3muAgPatKV3Be1FljI08tiKbjr+UGIcKdYkVqkIqdWr6sqkaeuVKQQBhnroiKRq67Vh+t8lSH0Asqmq7W6isiPER4EO3UQe62PU4Dz+ezoIc2RTQVUA4KNIzw7WncWtabepdyKVbq5ZLcvvsx3wSo19+3dzZL+zBDsC9wWmoTLuMd8zkacTT0+ZQFCr2NR2UbE6+ZjZFxgZsRBwKP9JxkIt4G/AhqbFdXyKiaRHebBkC7Hpibzwtj5ixGeTc/frKlSG59k4A6+RvGEWWT97SO2TGnM4SEL+zqWINhcuK8O7is26N/qfwBl7qri",
-          "refusalreason" : null,
           "issuerurl" : "https://test.adyen.com/hpp/3d/validate.shtml",
           "resultcode" : "RedirectShopper",
           "pspreference" : "8513655898657460"
@@ -206,7 +202,6 @@
        "id" : 1,
        "result" : {
           "authcode" : "25186",
-          "refusalreason" : null,
           "resultcode" : "Authorised",
           "pspreference" : "8513655898657460"
        }

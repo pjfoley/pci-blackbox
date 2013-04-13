@@ -1,11 +1,9 @@
 CREATE OR REPLACE FUNCTION Authorise_Payment_Request(
 OUT AuthCode integer,
-OUT FraudResult text,
 OUT IssuerURL text,
 OUT MD text,
 OUT PaReq text,
 OUT PSPReference text,
-OUT RefusalReason text,
 OUT ResultCode text,
 _CardKey text,
 _CVCKey text,
@@ -20,8 +18,6 @@ _Reference text,
 _ShopperIP inet,
 _ShopperEmail text,
 _ShopperReference text,
-_FraudOffset integer,
-_SelectedBrand text,
 _BrowserInfoAcceptHeader text,
 _BrowserInfoUserAgent text
 ) RETURNS RECORD AS $BODY$
@@ -76,21 +72,17 @@ _XMLResponse := HTTP_POST_XML(_URL, _Username, _Password, _XMLRequest);
 IF _PSP = 'Adyen' THEN
     SELECT
         Parse_Adyen_Authorise_Response.AuthCode,
-        Parse_Adyen_Authorise_Response.FraudResult,
         Parse_Adyen_Authorise_Response.IssuerURL,
         Parse_Adyen_Authorise_Response.MD,
         Parse_Adyen_Authorise_Response.PaReq,
         Parse_Adyen_Authorise_Response.PSPReference,
-        Parse_Adyen_Authorise_Response.RefusalReason,
         Parse_Adyen_Authorise_Response.ResultCode
     INTO STRICT
         Authorise_Payment_Request.AuthCode,
-        Authorise_Payment_Request.FraudResult,
         Authorise_Payment_Request.IssuerURL,
         Authorise_Payment_Request.MD,
         Authorise_Payment_Request.PaReq,
         Authorise_Payment_Request.PSPReference,
-        Authorise_Payment_Request.RefusalReason,
         Authorise_Payment_Request.ResultCode
     FROM Parse_Adyen_Authorise_Response(_XMLResponse);
 ELSE
@@ -101,5 +93,5 @@ RETURN;
 END;
 $BODY$ LANGUAGE plpgsql VOLATILE SECURITY DEFINER;
 
-REVOKE ALL ON FUNCTION Authorise_Payment_Request(_CardKey text, _CVCKey text, _PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _CurrencyCode char(3), _PaymentAmount numeric, _Reference text, _ShopperIP inet, _ShopperEmail text, _ShopperReference text, _FraudOffset integer, _SelectedBrand text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text) FROM PUBLIC;
-GRANT  ALL ON FUNCTION Authorise_Payment_Request(_CardKey text, _CVCKey text, _PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _CurrencyCode char(3), _PaymentAmount numeric, _Reference text, _ShopperIP inet, _ShopperEmail text, _ShopperReference text, _FraudOffset integer, _SelectedBrand text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text) TO GROUP pci;
+REVOKE ALL ON FUNCTION Authorise_Payment_Request(_CardKey text, _CVCKey text, _PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _CurrencyCode char(3), _PaymentAmount numeric, _Reference text, _ShopperIP inet, _ShopperEmail text, _ShopperReference text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text) FROM PUBLIC;
+GRANT  ALL ON FUNCTION Authorise_Payment_Request(_CardKey text, _CVCKey text, _PSP text, _MerchantAccount text, _URL text, _Username text, _Password text, _CurrencyCode char(3), _PaymentAmount numeric, _Reference text, _ShopperIP inet, _ShopperEmail text, _ShopperReference text, _BrowserInfoAcceptHeader text, _BrowserInfoUserAgent text) TO GROUP pci;

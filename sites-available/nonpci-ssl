@@ -1,12 +1,12 @@
 <IfModule mod_ssl.c>
 <VirtualHost _default_:30001>
-        DocumentRoot /var/www/nonpci
-        ErrorLog /tmp/httpd-nonpci-error.log
-        LogLevel warn
-        ServerName MY_EXTERNAL_IP:30001
-        SSLEngine on
-        SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
-        SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+    DocumentRoot /var/www/nonpci
+    ErrorLog /tmp/httpd-nonpci-error.log
+    LogLevel warn
+    ServerName MY_EXTERNAL_IP:30001
+    SSLEngine on
+    SSLCertificateFile    /etc/ssl/certs/ssl-cert-snakeoil.pem
+    SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
     <Location /nonpci>
         SetHandler perl-script
         PerlResponseHandler Plack::Handler::Apache2

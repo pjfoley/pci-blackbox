@@ -35,8 +35,6 @@ my $shopperip               = '1.2.3.4';
 my $cardcvc                 = 737;
 my $shopperemail            = 'test@test.com';
 my $shopperreference        = rand();
-my $fraudoffset             = undef;
-my $selectedbrand           = undef;
 my $browserinfoacceptheader = 'text/html,application/xhtml+xml, application/xml;q=0.9,*/*;q=0.8';
 my $browserinfouseragent    = 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9) Gecko/2008052912 Firefox/3.0';
 
@@ -115,8 +113,6 @@ my $request = {
     _shopperip               => $shopperip,
     _shopperemail            => $shopperemail,
     _shopperreference        => $shopperreference,
-    _fraudoffset             => $fraudoffset,
-    _selectedbrand           => $selectedbrand,
     _browserinfoacceptheader => $browserinfoacceptheader,
     _browserinfouseragent    => $browserinfouseragent
 };
@@ -126,9 +122,7 @@ cmp_deeply(
     {
         'md'            => re('^[a-zA-Z0-9/+=]+$'),
         'authcode'      => undef,
-        'fraudresult'   => undef,
-        'pareq'     => re('^[a-zA-Z0-9/+=]+$'),
-        'refusalreason' => undef,
+        'pareq'         => re('^[a-zA-Z0-9/+=]+$'),
         'issuerurl'     => re('^https://'),
         'resultcode'    => 'RedirectShopper',
         'pspreference'  => re('^\d+$')
@@ -189,8 +183,7 @@ cmp_deeply(
     {
         'pspreference'  => re('^\d+$'),
         'resultcode'    => 'Authorised',
-        'authcode'      => re('^\d+$'),
-        'refusalreason' => undef
+        'authcode'      => re('^\d+$')
     },
     'Authorise_Payment_Request_3D'
 );

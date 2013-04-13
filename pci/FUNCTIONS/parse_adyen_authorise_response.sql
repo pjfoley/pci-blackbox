@@ -1,11 +1,9 @@
 CREATE OR REPLACE FUNCTION Parse_Adyen_Authorise_Response(
 OUT AuthCode integer,
-OUT FraudResult text,
 OUT IssuerURL text,
 OUT MD text,
 OUT PaReq text,
 OUT PSPReference text,
-OUT RefusalReason text,
 OUT ResultCode text,
 _XML xml
 ) RETURNS RECORD AS $BODY$
@@ -25,12 +23,10 @@ _NSArray := ARRAY[
 _BasePath := '/soap:Envelope/soap:Body/ns1:authoriseResponse/ns1:paymentResult/ns1:';
 
 AuthCode      := (xpath(_BasePath || 'authCode/text()',     _XML,_NSArray))[1]::text;
-FraudResult   := (xpath(_BasePath || 'fraudResult/text()',  _XML,_NSArray))[1]::text;
 IssuerURL     := (xpath(_BasePath || 'issuerUrl/text()',    _XML,_NSArray))[1]::text;
 MD            := (xpath(_BasePath || 'md/text()',           _XML,_NSArray))[1]::text;
 PaReq         := (xpath(_BasePath || 'paRequest/text()',    _XML,_NSArray))[1]::text;
 PSPReference  := (xpath(_BasePath || 'pspReference/text()', _XML,_NSArray))[1]::text;
-RefusalReason := (xpath(_BasePath || 'refusalReason/text()',_XML,_NSArray))[1]::text;
 ResultCode    := (xpath(_BasePath || 'resultCode/text()',   _XML,_NSArray))[1]::text;
 
 RETURN;

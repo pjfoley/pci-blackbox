@@ -25,8 +25,6 @@ _MerchantAccount text;
 _URL text;
 _Username text;
 _Password text;
-_FraudOffset integer;
-_SelectedBrand text;
 _CardID bigint;
 _Reference text;
 _ShopperEmail text;
@@ -34,9 +32,7 @@ _ShopperReference text;
 _MerchantAccountID integer;
 
 _AuthCode integer;
-_FraudResult text;
 _PSPReference text;
-_RefusalReason text;
 BEGIN
 
 -- In production, resolve these variables from OrderID:
@@ -54,26 +50,19 @@ _CardID := Store_Card_Key(_CardNumberReference, _CardKey, _CardBIN, _CardLast4);
 -- There is only one merchant account so far
 SELECT MerchantAccountID, PSP, MerchantAccount, URL, Username, Password, PCIBlackBoxURL INTO STRICT _MerchantAccountID, _PSP, _MerchantAccount, _URL, _Username, _Password, _PCIBlackBoxURL FROM MerchantAccounts;
 
-_FraudOffset := NULL;
-_SelectedBrand := NULL;
-
 SELECT
     Authorise_Payment_Request_JSON_RPC.AuthCode,
-    Authorise_Payment_Request_JSON_RPC.FraudResult,
     Authorise_Payment_Request_JSON_RPC.IssuerURL,
     Authorise_Payment_Request_JSON_RPC.MD,
     Authorise_Payment_Request_JSON_RPC.PaReq,
     Authorise_Payment_Request_JSON_RPC.PSPReference,
-    Authorise_Payment_Request_JSON_RPC.RefusalReason,
     Authorise_Payment_Request_JSON_RPC.ResultCode
 INTO STRICT
     _AuthCode,
-    _FraudResult,
     Authorise.IssuerURL,
     Authorise.MD,
     Authorise.PaReq,
     _PSPReference,
-    _RefusalReason,
     Authorise.ResultCode
 FROM Authorise_Payment_Request_JSON_RPC(
     _PCIBlackBoxURL,
@@ -90,14 +79,12 @@ FROM Authorise_Payment_Request_JSON_RPC(
     _Remote_Addr,
     _ShopperEmail,
     _ShopperReference,
-    _FraudOffset,
-    _SelectedBrand,
     _HTTP_Accept,
     _HTTP_User_Agent
 );
 
-INSERT INTO AuthoriseRequests (OrderID, CurrencyCode, PaymentAmount, MerchantAccountID, CardID, AuthCode, FraudResult, IssuerURL, MD, PaReq, PSPReference, RefusalReason, ResultCode)
-VALUES (_OrderID, _CurrencyCode, _PaymentAmount, _MerchantAccountID, _CardID, _AuthCode, _FraudResult, Authorise.IssuerURL, Authorise.MD, Authorise.PaReq, _PSPReference, _RefusalReason, Authorise.ResultCode)
+INSERT INTO AuthoriseRequests (OrderID, CurrencyCode, PaymentAmount, MerchantAccountID, CardID, AuthCode, IssuerURL, MD, PaReq, PSPReference, ResultCode)
+VALUES (_OrderID, _CurrencyCode, _PaymentAmount, _MerchantAccountID, _CardID, _AuthCode, Authorise.IssuerURL, Authorise.MD, Authorise.PaReq, _PSPReference, Authorise.ResultCode)
 RETURNING AuthoriseRequests.AuthoriseRequestID INTO STRICT Authorise.AuthoriseRequestID;
 
 -- Set this to your own domain-name:

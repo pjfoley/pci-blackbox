@@ -2,7 +2,6 @@ CREATE OR REPLACE FUNCTION Authorise_Payment_Request_3D_JSON_RPC(
 OUT PSPReference text,
 OUT ResultCode text,
 OUT AuthCode integer,
-OUT RefusalReason text,
 _PCIBlackBoxURL text,
 _PSP text,
 _MerchantAccount text,

@@ -17,7 +17,6 @@ _Password text;
 _PSPReference text;
 _ResultCode text;
 _AuthCode integer;
-_RefusalReason text;
 _Datestamp timestamptz;
 BEGIN
 
@@ -30,13 +29,11 @@ WHERE AuthoriseRequests.AuthoriseRequestID = _AuthoriseRequestID;
 SELECT
     Authorise_Payment_Request_3D_JSON_RPC.PSPReference,
     Authorise_Payment_Request_3D_JSON_RPC.ResultCode,
-    Authorise_Payment_Request_3D_JSON_RPC.AuthCode,
-    Authorise_Payment_Request_3D_JSON_RPC.RefusalReason
+    Authorise_Payment_Request_3D_JSON_RPC.AuthCode
 INTO STRICT
     _PSPReference,
     _ResultCode,
-    _AuthCode,
-    _RefusalReason
+    _AuthCode
 FROM Authorise_Payment_Request_3D_JSON_RPC(
     _PCIBlackBoxURL,
     _PSP,
@@ -51,8 +48,8 @@ FROM Authorise_Payment_Request_3D_JSON_RPC(
     _Remote_Addr
 );
 
-INSERT INTO Authorise3DRequests (AuthoriseRequestID, PSPReference, ResultCode, AuthCode, RefusalReason)
-VALUES (_AuthoriseRequestID, _PSPReference, _ResultCode, _AuthCode, _RefusalReason)
+INSERT INTO Authorise3DRequests (AuthoriseRequestID, PSPReference, ResultCode, AuthCode)
+VALUES (_AuthoriseRequestID, _PSPReference, _ResultCode, _AuthCode)
 RETURNING Datestamp INTO STRICT _Datestamp;
 
 -- In the real back-end, set this to whatever url the customer
