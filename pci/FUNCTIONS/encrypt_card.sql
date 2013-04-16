@@ -41,7 +41,7 @@ IF NOT FOUND THEN
     INSERT INTO CardNumberReferences (CardNumberHash) VALUES (_CardNumberHash) RETURNING CardNumberReferences.CardNumberReference INTO STRICT Encrypt_Card.CardNumberReference;
 END IF;
 
-CardKey := encode(gen_random_bytes(256),'hex');
+CardKey := encode(gen_random_bytes(32),'hex'); -- 32 bytes = 256 bits
 _CardKeyHash := digest(CardKey,'sha512');
 _CardJSON := Card_To_JSON(
     _CardNumber,

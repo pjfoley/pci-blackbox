@@ -14,7 +14,7 @@ ELSE
     RAISE EXCEPTION 'ERROR_INVALID_INPUT CardCVC %', _CardCVC;
 END IF;
 
-CVCKey := encode(gen_random_bytes(256),'hex');
+CVCKey := encode(gen_random_bytes(32),'hex'); -- 32 bytes = 256 bits
 _CVCKeyHash := digest(CVCKey,'sha512');
 _CVCData := pgp_sym_encrypt(_CardCVC,CVCKey,'cipher-algo=aes256');
 
