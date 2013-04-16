@@ -77,10 +77,10 @@ cmp_deeply(
     $encrypted_card,
     {
         cardnumberreference => re('^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$'),
-        cardkey             => re('^[0-9a-f]{512}$'),
+        cardkey             => re('^[0-9a-f]{64}$'),
         cardbin             => re('^[0-9]{6}$'),
         cardlast4           => re('^[0-9]{4}$'),
-        cvckey              => re('^[0-9a-f]{512}$')
+        cvckey              => re('^[0-9a-f]{64}$')
     },
     'Encrypt_Card'
 );
