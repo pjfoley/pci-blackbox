@@ -11,7 +11,7 @@ BEGIN
 IF _CardCVC ~ '^[0-9]{3}$' THEN
     -- OK
 ELSE
-    RAISE EXCEPTION 'ERROR_INVALID_INPUT CardCVC %', _CardCVC;
+    RAISE EXCEPTION 'ERROR_INVALID_INPUT';
 END IF;
 
 CVCKey := encode(gen_random_bytes(32),'hex'); -- 32 bytes = 256 bits

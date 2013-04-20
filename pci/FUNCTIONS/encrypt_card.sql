@@ -24,7 +24,7 @@ _HashSaltID integer := 1;
 BEGIN
 
 IF _CardNumber IS NULL OR _CardNumber !~ '^[0-9]{13,16}$' OR _CardExpiryMonth IS NULL OR _CardExpiryYear IS NULL OR _CardHolderName IS NULL THEN
-    RAISE EXCEPTION 'ERROR_INVALID_INPUT CardNumber % CardExpiryMonth % CardExpiryYear % CardHolderName %', _CardNumber, _CardExpiryMonth, _CardExpiryYear, _CardHolderName;
+    RAISE EXCEPTION 'ERROR_INVALID_INPUT';
 END IF;
 
 CardBIN := substr(_CardNumber,1,6);
